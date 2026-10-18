@@ -82,9 +82,14 @@
       return '<li class="' + (r.done ? 'is-done' : '') + '"><span class="st ' + (r.done ? 'done' : 'next') + '" title="' +
         esc(t(r.done ? 'lab.done' : 'lab.next')) + '">' + (r.done ? '✓' : '') + '</span><span>' + esc(L(r)) + '</span></li>';
     }).join('');
-    $('#incidents').innerHTML = S.incidents.map(function (x) {
+    $('#incidents').innerHTML = S.incidents.map(function (x, i) {
+      var st = (S.incidentStates || [])[i];
+      var flip = st ?
+        '<div class="inc-state is-before" data-before="' + esc(L(st.before)) + '" data-after="' + esc(L(st.after)) + '">' +
+          '<span class="inc-badge">' + esc(t('lab.before')) + '</span><code>' + esc(L(st.before)) + '</code></div>' +
+        '<button class="inc-flip" type="button" aria-pressed="false">' + esc(t('lab.showfix')) + '</button>' : '';
       return '<article class="incident glass">' +
-        '<code class="inc-cmd">' + esc(x.cmd) + '</code>' +
+        '<code class="inc-cmd">' + esc(x.cmd) + '</code>' + flip +
         '<h4>' + esc(L(x.title)) + '</h4><p>' + esc(L(x.body)) + '</p>' +
         '<p class="inc-lesson"><b>' + esc(t('lab.lesson')) + '</b>' + esc(L(x.lesson)) + '</p></article>';
     }).join('');
@@ -134,6 +139,24 @@
   }
 
   /* ---------------- Theme / language ---------------- */
+  /* Cross-fade (language) or circular reveal from the button (theme) where the browser supports it */
+  function transition(kind, update, origin) {
+    if (!document.startViewTransition || reduceMotion) { update(); return; }
+    var x = window.innerWidth / 2, y = 0;
+    if (origin) { var b = origin.getBoundingClientRect(); x = b.left + b.width / 2; y = b.top + b.height / 2; }
+    var r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    var cls = 'vt-' + kind, done = function () { root.classList.remove(cls); };
+    root.classList.add(cls);
+    var vt = document.startViewTransition(update);
+    if (kind === 'theme') {
+      vt.ready.then(function () {
+        root.animate(
+          { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + r + 'px at ' + x + 'px ' + y + 'px)'] },
+          { duration: 600, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' });
+      }, function () {});
+    }
+    vt.finished.then(done, done);
+  }
   function setTheme(th) {
     root.setAttribute('data-theme', th);
     store('pk-theme', th);
@@ -142,12 +165,17 @@
     net.refreshColors();
   }
   function setLang(l) {
-    root.setAttribute('lang', l);
-    store('pk-lang', l);
-    renderAll();
-    $$('.reveal').forEach(function (el) { el.classList.add('in'); });
+    transition('lang', function () {
+      root.setAttribute('lang', l);
+      store('pk-lang', l);
+      renderAll();
+      $$('.reveal').forEach(function (el) { el.classList.add('in'); });
+    });
   }
-  $('#theme-btn').addEventListener('click', function () { setTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light'); });
+  $('#theme-btn').addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    transition('theme', function () { setTheme(next); }, this);
+  });
   $('#lang-btn').addEventListener('click', function () { setLang(lang() === 'el' ? 'en' : 'el'); });
 
   /* ---------------- Copy email ---------------- */
@@ -167,9 +195,17 @@
   copyBtn.addEventListener('click', function () {
     var label = $('#copy-mail-label');
     copyText(copyBtn.getAttribute('data-email')).then(function () {
+      var ico = $('#copy-ico');
+      if (!copyBtn.dataset.icoHtml) copyBtn.dataset.icoHtml = ico.innerHTML;
+      ico.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+      copyBtn.classList.add('copied');
       label.textContent = t('contact.copied');
       clearTimeout(copyTimer);
-      copyTimer = setTimeout(function () { label.textContent = t('contact.copy'); }, 1800);
+      copyTimer = setTimeout(function () {
+        label.textContent = t('contact.copy');
+        ico.innerHTML = copyBtn.dataset.icoHtml;
+        copyBtn.classList.remove('copied');
+      }, 1800);
     }, function () {
       window.location.href = 'mailto:' + copyBtn.getAttribute('data-email');
     });
@@ -534,15 +570,14 @@
                   client01: '192.168.10.50', 'client01.lab.local': '192.168.10.50', '192.168.10.50': '192.168.10.50' };
       if (!h) return C('c-bad', 'usage: ping <host>');
       if (h === '192.168.10.1') {
-        return 'Pinging 192.168.10.1 with 32 bytes of data:\n' +
-          C('c-warn', 'Reply from 192.168.10.50: Destination host unreachable.\nReply from 192.168.10.50: Destination host unreachable.') + '\n' +
-          C('c-dim', '# expected: nobody owns .1 on this subnet, so ARP gets no answer\n# and the "reply" comes from my own address — unreachable, not timed out');
+        var bad = C('c-warn', 'Reply from 192.168.10.50: Destination host unreachable.');
+        return { delay: 450, seq: ['Pinging 192.168.10.1 with 32 bytes of data:', bad, bad, bad, bad, ' ',
+          C('c-dim', '# expected: nobody owns .1 on this subnet, so ARP gets no answer\n# and the "reply" comes from my own address — unreachable, not timed out')] };
       }
       if (!map[h]) return 'Ping request could not find host ' + esc(args[0]) + '. Please check the name and try again.';
-      var ip = map[h], lines = [];
-      for (var i = 0; i < 4; i++) lines.push('Reply from ' + ip + ': bytes=32 time<1ms TTL=128');
-      return 'Pinging ' + esc(args[0]) + ' [' + ip + '] with 32 bytes of data:\n' + C('c-ok', lines.join('\n')) +
-        '\n\nPackets: Sent = 4, Received = 4, Lost = 0 (0% loss)';
+      var ip = map[h], ok = C('c-ok', 'Reply from ' + ip + ': bytes=32 time<1ms TTL=128');
+      return { delay: 420, seq: ['Pinging ' + esc(args[0]) + ' [' + ip + '] with 32 bytes of data:', ok, ok, ok, ok, ' ',
+        'Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)'] };
     } },
     ipconfig: { d: 'CLIENT01 network config', f: function () {
       return 'Windows IP Configuration\n\nEthernet adapter Ethernet:\n\n' +
@@ -580,7 +615,20 @@
   };
   var ALIAS = { exp: 'experience', cls: 'clear', quit: 'exit', '?': 'help', man: 'help', 'get-help': 'help', 'test-connection': 'ping', resume: 'cv' };
 
+  var streaming = false;
+  function printSeq(parts, delay) {
+    if (reduceMotion) { parts.forEach(function (p) { print(p); }); return; }
+    var i = 0;
+    streaming = true;
+    (function next() {
+      if (i >= parts.length) { streaming = false; return; }
+      print(parts[i++]);
+      setTimeout(next, delay);
+    })();
+  }
+
   function run(line) {
+    if (streaming) return;
     var raw = line.trim();
     print(PS + ' ' + esc(raw), 'o-cmd');
     if (!raw) return;
@@ -590,7 +638,8 @@
     var c = CMDS[name];
     if (!c) { print(C('c-bad', esc(parts[0]) + ': command not found') + C('c-dim', ' — try "help"')); return; }
     var res = c.f(args);
-    if (res != null) print(res);
+    if (res && res.seq) printSeq(res.seq, res.delay || 400);
+    else if (res != null) print(res);
   }
   $('#term-form').addEventListener('submit', function (e) { e.preventDefault(); run(input.value); input.value = ''; });
   input.addEventListener('keydown', function (e) {
@@ -636,6 +685,21 @@
     g.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); }
     });
+  });
+
+  /* ---------------- Incident before / after ---------------- */
+  $('#incidents').addEventListener('click', function (e) {
+    var btn = e.target.closest('.inc-flip');
+    if (!btn) return;
+    var box = btn.previousElementSibling, after = box.classList.contains('is-before');
+    box.classList.toggle('is-before', !after);
+    box.classList.toggle('is-after', after);
+    $('.inc-badge', box).textContent = t(after ? 'lab.after' : 'lab.before');
+    var code = $('code', box);
+    code.textContent = box.getAttribute(after ? 'data-after' : 'data-before');
+    code.classList.remove('swap'); void code.offsetWidth; code.classList.add('swap');
+    btn.textContent = t(after ? 'lab.showprob' : 'lab.showfix');
+    btn.setAttribute('aria-pressed', after);
   });
 
   /* ---------------- Init ---------------- */

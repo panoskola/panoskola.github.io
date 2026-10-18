@@ -23,6 +23,7 @@ window.SITE = {
       'lab.topo': 'Topology', 'lab.broke': 'What broke, and what it taught me',
       'lab.roadmap': 'Build log & roadmap', 'lab.repo': 'View runbooks on GitHub',
       'lab.gw': 'gateway · intentionally absent', 'lab.lesson': 'Lesson',
+      'lab.before': 'Before', 'lab.after': 'After the fix', 'lab.showfix': 'Show the fix', 'lab.showprob': 'Show the problem',
       'lab.try': 'Click a machine to run a command on it in the terminal.', 'a11y.skip': 'Skip to content', 'footer.email': 'Email', 'footer.updated': 'Last updated',
       'lab.done': 'Done', 'lab.next': 'Next',
       'proj.label': 'Built & running', 'proj.title': 'Projects',
@@ -61,6 +62,7 @@ window.SITE = {
       'lab.topo': 'Τοπολογία', 'lab.broke': 'Τι χάλασε και τι μου έμαθε',
       'lab.roadmap': 'Ημερολόγιο & επόμενα βήματα', 'lab.repo': 'Τα runbooks στο GitHub',
       'lab.gw': 'gateway · σκόπιμα ανύπαρκτο', 'lab.lesson': 'Μάθημα',
+      'lab.before': 'Πριν', 'lab.after': 'Μετά τη διόρθωση', 'lab.showfix': 'Δες τη διόρθωση', 'lab.showprob': 'Δες το πρόβλημα',
       'lab.try': 'Πάτησε ένα μηχάνημα για να τρέξει μια εντολή στο terminal.', 'a11y.skip': 'Μετάβαση στο περιεχόμενο', 'footer.email': 'Email', 'footer.updated': 'Τελευταία ενημέρωση',
       'lab.done': 'Έγινε', 'lab.next': 'Επόμενο',
       'proj.label': 'Στημένα & σε λειτουργία', 'proj.title': 'Projects',
@@ -215,6 +217,20 @@ window.SITE = {
       body: { en: 'Hyper-V provides a virtual TPM, but it is disabled by default.',
               el: 'Το Hyper-V έχει virtual TPM, αλλά είναι απενεργοποιημένο από προεπιλογή.' },
       lesson: { en: 'Settings → Security → Enable Trusted Platform Module.', el: 'Settings → Security → Enable Trusted Platform Module.' } }
+  ],
+
+  /* Before/after line for each incident above, same order. Edit the wording here. */
+  incidentStates: [
+    { before: { en: 'Reply from 192.168.10.50: Destination host unreachable.', el: 'Reply from 192.168.10.50: Destination host unreachable.' },
+      after:  { en: 'Reply from 192.168.10.10: bytes=32 time<1ms TTL=128', el: 'Reply from 192.168.10.10: bytes=32 time<1ms TTL=128' } },
+    { before: { en: 'dcdiag: DNS registration failed for every SRV record', el: 'dcdiag: αποτυχία εγγραφής DNS για κάθε SRV record' },
+      after:  { en: 'nltest /dsregdns: records registered again, Netlogon restarted', el: 'nltest /dsregdns: τα records ξαναεγγράφηκαν, restart στο Netlogon' } },
+    { before: { en: 'dcdiag: errors in the System event log', el: 'dcdiag: σφάλματα στο System event log' },
+      after:  { en: 'Same errors, but their timestamps predate the fix: nothing left to fix', el: 'Ίδια σφάλματα, αλλά με timestamp πριν τη διόρθωση: δεν υπάρχει τίποτα να διορθωθεί' } },
+    { before: { en: 'Join succeeded, then: “Changing the Primary Domain DNS name … failed”', el: 'Το join πέτυχε και μετά: «Changing the Primary Domain DNS name … failed»' },
+      after:  { en: 'Rename, reboot, then join: no error', el: 'Μετονομασία, επανεκκίνηση, μετά join: χωρίς σφάλμα' } },
+    { before: { en: 'Windows 11 setup blocked: no TPM available', el: 'Η εγκατάσταση Windows 11 μπλοκάρει: δεν υπάρχει TPM' },
+      after:  { en: 'Enable Trusted Platform Module: setup continues', el: 'Enable Trusted Platform Module: η εγκατάσταση συνεχίζεται' } }
   ],
 
   roadmap: [
