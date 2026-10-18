@@ -136,6 +136,7 @@
     renderLab();
     renderProjects();
     renderCerts();
+    renderBreak();
     markTools();
     queueTimeline();
     observeReveals();
@@ -591,6 +592,12 @@
       var map = { dc01: '192.168.10.10', 'dc01.lab.local': '192.168.10.10', '192.168.10.10': '192.168.10.10',
                   client01: '192.168.10.50', 'client01.lab.local': '192.168.10.50', '192.168.10.50': '192.168.10.50' };
       if (!h) return C('c-bad', 'usage: ping <host>');
+      if (labBroken && map[h] === '192.168.10.10') {
+        var no = C('c-warn', 'Reply from 192.168.10.50: Destination host unreachable.');
+        var who = h === '192.168.10.10' ? '192.168.10.10' : esc(args[0]) + ' [192.168.10.10]';
+        return { delay: 450, seq: ['Pinging ' + who + ' with 32 bytes of data:', no, no, no, no, ' ',
+          C('c-dim', '# DC01 is on .50, the address CLIENT01 already owns, so nobody answers on .10\n# and the "reply" comes from CLIENT01 itself: unreachable, not timed out')] };
+      }
       if (h === '192.168.10.1') {
         var bad = C('c-warn', 'Reply from 192.168.10.50: Destination host unreachable.');
         return { delay: 450, seq: ['Pinging 192.168.10.1 with 32 bytes of data:', bad, bad, bad, bad, ' ',
@@ -717,13 +724,15 @@
   $('#term-btn-hero').addEventListener('click', openTerm);
   $$('.t-click').forEach(function (g) {
     function fire() {
-      var cmd = g.getAttribute('data-cmd'), p = document.getElementById(g.getAttribute('data-ping'));
+      var cmd = g.getAttribute('data-cmd'), pid = g.getAttribute('data-ping');
+      if (labBroken && pid === 'ping-dc01') pid = 'ping-dc01-bad';
+      var p = document.getElementById(pid);
       if (g.dataset.busy) return;
       if (reduceMotion || !p) { openTerm(); run(cmd); return; }
       g.dataset.busy = '1';
       p.classList.remove('go'); void p.getBoundingClientRect(); p.classList.add('go');
       g.classList.add('pinged');
-      var dead = p.classList.contains('t-ping-bad'), ghost = $('.t-ghost');
+      var dead = p.classList.contains('t-ping-bad'), ghost = pid === 'ping-dc01-bad' ? $('.dc01 .t-node') : $('.t-ghost');
       if (dead && ghost) setTimeout(function () { ghost.classList.add('flash'); }, 750);
       setTimeout(function () {
         p.classList.remove('go'); g.classList.remove('pinged');
@@ -736,6 +745,27 @@
     g.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); }
     });
+  });
+
+  /* ---------------- Break / fix the lab (first incident: the DC had the client's address) ---------------- */
+  var labBroken = false, breakTimer = null;
+  function renderBreak() {
+    var svg = $('.topo-svg'), btn = $('#break-btn'), note = $('#break-note'), ip = $('#dc-ip');
+    if (!svg || !btn) return;
+    svg.classList.toggle('broken', labBroken);
+    ip.textContent = labBroken ? '192.168.10.50' : '192.168.10.10';
+    btn.textContent = t(labBroken ? 'lab.fix' : 'lab.break');
+    btn.setAttribute('aria-pressed', labBroken ? 'true' : 'false');
+    note.textContent = labBroken ? t('lab.broken.note') : '';
+  }
+  $('#break-btn').addEventListener('click', function () {
+    labBroken = !labBroken;
+    renderBreak();
+    clearTimeout(breakTimer);
+    if (!labBroken) {
+      $('#break-note').textContent = t('lab.fixed.note');
+      breakTimer = setTimeout(function () { if (!labBroken) $('#break-note').textContent = ''; }, 3500);
+    }
   });
 
   /* ---------------- Click a tool, see where it was used ---------------- */
