@@ -732,3 +732,14 @@ html.vt-theme::view-transition-old(root) { z-index: 1; }
 .tool-clear { color: var(--accent); font-weight: 600; margin-left: 10px; }
 .tool-clear:hover { text-decoration: underline; }
 @media print { .tool-hint { display: none; } .dim { opacity: 1; } }
+
+/* ---------- Experience line fills with scroll ---------- */
+.timeline::after {
+  content: ""; position: absolute; left: 9px; top: 6px; width: 2px; border-radius: 2px;
+  height: calc((100% - 12px) * var(--tl, 0));
+  background: linear-gradient(var(--accent), var(--accent-2)); box-shadow: 0 0 10px var(--glow);
+  pointer-events: none;
+}
+.t-item::before { transition: background .3s, border-color .3s, box-shadow .3s; }
+.t-item.passed::before { background: var(--accent); border-color: var(--accent); }
+@media print { .timeline::after { display: none; } }

@@ -73,6 +73,7 @@
         openRoles[i] = !item.classList.contains('open');
         item.classList.toggle('open', openRoles[i]);
         btn.setAttribute('aria-expanded', openRoles[i]);
+        setTimeout(queueTimeline, 500);
       });
     });
   }
@@ -136,6 +137,7 @@
     renderProjects();
     renderCerts();
     markTools();
+    queueTimeline();
     observeReveals();
     bindGlass();
     bindTilt();
@@ -234,6 +236,22 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('load', function () { requestAnimationFrame(onScroll); });
+
+  /* The experience line fills as you scroll past it, and each role's dot lights up once you reach it */
+  var tl = $('#timeline'), tlQueued = false;
+  function updateTimeline() {
+    if (!tl) return;
+    var r = tl.getBoundingClientRect(), mid = window.innerHeight * 0.5;
+    tl.style.setProperty('--tl', Math.max(0, Math.min(1, (mid - r.top) / r.height)).toFixed(3));
+    $$('.t-item', tl).forEach(function (li) { li.classList.toggle('passed', li.getBoundingClientRect().top + 26 < mid); });
+  }
+  function queueTimeline() {
+    if (tlQueued) return;
+    tlQueued = true;
+    requestAnimationFrame(function () { tlQueued = false; updateTimeline(); });
+  }
+  window.addEventListener('scroll', queueTimeline, { passive: true });
+  window.addEventListener('resize', queueTimeline);
 
   if ('IntersectionObserver' in window) {
     var secObs = new IntersectionObserver(function (entries) {
