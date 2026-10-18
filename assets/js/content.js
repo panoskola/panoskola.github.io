@@ -29,7 +29,7 @@ window.SITE = {
       'proj.label': 'Built & running', 'proj.title': 'Projects',
       'proj.flow': 'Request path', 'proj.stack': 'Stack', 'proj.learned': 'What broke, and what it taught me',
       'proj.repo': 'View code & runbook on GitHub',
-      'proj.play': 'Play the path', 'proj.replay': 'Play again', 'proj.pipeline': 'Pipeline', 'proj.learned2': 'What I learned', 'proj.code': 'View code on GitHub',
+      'tool.hint': 'Click a tool to see where I used it.', 'tool.in': 'Used in', 'tool.clear': 'Clear', 'proj.play': 'Play the path', 'proj.replay': 'Play again', 'proj.pipeline': 'Pipeline', 'proj.learned2': 'What I learned', 'proj.code': 'View code on GitHub',
       'certs.label': 'Background', 'certs.title': 'Education & Credentials',
       'certs.edu': 'Education', 'certs.courses': 'Certifications & Training', 'certs.lang': 'Languages',
       'certs.prep': 'In preparation', 'certs.done': 'Completed',
@@ -68,7 +68,7 @@ window.SITE = {
       'proj.label': 'Στημένα & σε λειτουργία', 'proj.title': 'Projects',
       'proj.flow': 'Διαδρομή αιτήματος', 'proj.stack': 'Τεχνολογίες', 'proj.learned': 'Τι χάλασε και τι μου έμαθε',
       'proj.repo': 'Κώδικας & runbook στο GitHub',
-      'proj.play': 'Παίξε τη διαδρομή', 'proj.replay': 'Ξανά', 'proj.pipeline': 'Ροή', 'proj.learned2': 'Τι έμαθα', 'proj.code': 'Ο κώδικας στο GitHub',
+      'tool.hint': 'Πάτησε ένα εργαλείο για να δεις πού το χρησιμοποίησα.', 'tool.in': 'Χρησιμοποιήθηκε σε', 'tool.clear': 'Καθαρισμός', 'proj.play': 'Παίξε τη διαδρομή', 'proj.replay': 'Ξανά', 'proj.pipeline': 'Ροή', 'proj.learned2': 'Τι έμαθα', 'proj.code': 'Ο κώδικας στο GitHub',
       'certs.label': 'Υπόβαθρο', 'certs.title': 'Σπουδές & Πιστοποιήσεις',
       'certs.edu': 'Σπουδές', 'certs.courses': 'Πιστοποιήσεις & Εκπαίδευση', 'certs.lang': 'Γλώσσες',
       'certs.prep': 'Σε προετοιμασία', 'certs.done': 'Ολοκληρώθηκε',
@@ -96,6 +96,22 @@ window.SITE = {
     { icon: 'server', title: { en: 'Servers & Networking', el: 'Servers & Δίκτυα' },
       tags: ['Windows Server 2022 (lab)', 'AD DS · DNS', 'Hyper-V', 'TCP/IP · DHCP', 'Wireshark', 'Packet Tracer', '3CX'] }
   ],
+
+  /* Words to look for in the page text when a tool tag is clicked. A tag not listed here is searched for by its own name. */
+  toolKeys: {
+    'Google Workspace Admin': ['google workspace'],
+    'Microsoft 365 Admin': ['microsoft 365'],
+    'RBAC': ['role-based', 'βάσει ρόλων'],
+    'Onboarding / Offboarding': ['onboarding'],
+    'Trend Micro Apex One': ['trend micro'],
+    'Patch Management': ['patched', 'patching'],
+    'JumpCloud MDM': ['jumpcloud'],
+    'Windows · macOS · iOS': [],
+    'Windows Server 2022 (lab)': ['windows server'],
+    'AD DS · DNS': ['active directory', 'ad ds'],
+    'TCP/IP · DHCP': ['dhcp'],
+    'Packet Tracer': []
+  },
 
   experience: [
     {

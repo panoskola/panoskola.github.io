@@ -720,3 +720,15 @@ html.vt-theme::view-transition-old(root) { z-index: 1; }
   .pf-link.go::before { transform: scaleY(1); }
 }
 @media print { .flow-bar { display: none; } }
+
+/* ---------- Click a tool, see where it was used ---------- */
+.tag.tag-btn { cursor: pointer; }
+.tag.active { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.t-card, .proj, .topo, .roadmap { transition: opacity .3s, box-shadow .3s, border-color .3s; }
+.hit { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent), 0 0 24px -6px var(--glow); }
+.dim { opacity: .38; }
+.tool-hint { margin-top: 18px; min-height: 1.8em; font-size: 14px; color: var(--text-soft); }
+.tool-hint strong { color: var(--text); }
+.tool-clear { color: var(--accent); font-weight: 600; margin-left: 10px; }
+.tool-clear:hover { text-decoration: underline; }
+@media print { .tool-hint { display: none; } .dim { opacity: 1; } }

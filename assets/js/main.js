@@ -41,7 +41,7 @@
     $('#stack-grid').innerHTML = S.stack.map(function (c) {
       return '<article class="stack-card glass">' +
         '<div class="stack-top"><span class="stack-ico">' + svgIcon(c.icon) + '</span><h3>' + esc(L(c.title)) + '</h3></div>' +
-        '<div class="tags">' + c.tags.map(function (tg) { return '<span class="tag">' + esc(tg) + '</span>'; }).join('') + '</div></article>';
+        '<div class="tags">' + c.tags.map(function (tg) { return '<span class="tag" data-tag="' + esc(tg) + '">' + esc(tg) + '</span>'; }).join('') + '</div></article>';
     }).join('');
   }
 
@@ -135,6 +135,7 @@
     renderLab();
     renderProjects();
     renderCerts();
+    markTools();
     observeReveals();
     bindGlass();
     bindTilt();
@@ -718,6 +719,77 @@
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); }
     });
   });
+
+  /* ---------------- Click a tool, see where it was used ---------------- */
+  var activeTool = null;
+
+  function toolKeys(tag) {
+    var k = (S.toolKeys || {})[tag];
+    return k ? k : [tag.toLowerCase()];
+  }
+  function toolTargets() {
+    var out = [];
+    $$('#timeline .t-item').forEach(function (li) {
+      out.push({ kind: 'role', item: li, els: [$('.t-card', li)], name: $('.t-org b', li).textContent, text: li.textContent.toLowerCase() });
+    });
+    $$('#projects-list .proj').forEach(function (a) {
+      out.push({ kind: 'proj', els: [a], name: $('.proj-title', a).textContent, text: a.textContent.toLowerCase() });
+    });
+    var lab = $('#lab');
+    if (lab) out.push({ kind: 'lab', els: $$('.topo, .roadmap', lab), name: t('nav.lab'), text: lab.textContent.toLowerCase() });
+    return out;
+  }
+  function toolHits(tag, targets) {
+    var keys = toolKeys(tag);
+    return targets.filter(function (tg) { return keys.some(function (k) { return k && tg.text.indexOf(k) >= 0; }); });
+  }
+  function toolHint(html) { var h = $('#tool-hint'); if (h) h.innerHTML = html; }
+
+  function clearTool() {
+    activeTool = null;
+    $$('.hit, .dim').forEach(function (el) { el.classList.remove('hit', 'dim'); });
+    $$('#stack-grid .tag-btn').forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+    toolHint(esc(t('tool.hint')));
+  }
+  function markTools() {
+    var targets = toolTargets();
+    $$('#stack-grid .tag').forEach(function (el) {
+      if (!toolHits(el.getAttribute('data-tag'), targets).length) return;
+      el.classList.add('tag-btn');
+      el.setAttribute('role', 'button'); el.tabIndex = 0; el.setAttribute('aria-pressed', 'false');
+    });
+    clearTool();
+  }
+  function pickTool(el) {
+    var tag = el.getAttribute('data-tag');
+    if (activeTool === tag) { clearTool(); return; }
+    clearTool();
+    activeTool = tag;
+    var targets = toolTargets(), hits = toolHits(tag, targets);
+    targets.forEach(function (tg) {
+      var hit = hits.indexOf(tg) >= 0;
+      tg.els.forEach(function (e) { e.classList.toggle('hit', hit); if (tg.kind !== 'lab') e.classList.toggle('dim', !hit); });
+      if (hit && tg.item) {
+        var i = +tg.item.getAttribute('data-i');
+        openRoles[i] = true;
+        tg.item.classList.add('open');
+        $('.t-head', tg.item).setAttribute('aria-expanded', 'true');
+      }
+    });
+    el.classList.add('active'); el.setAttribute('aria-pressed', 'true');
+    toolHint('<strong>' + esc(tag) + '</strong> · ' + esc(t('tool.in')) + ': ' + hits.map(function (h) { return esc(h.name); }).join(' · ') +
+      ' <button class="tool-clear" type="button">' + esc(t('tool.clear')) + '</button>');
+    if (hits.length) setTimeout(function () { hits[0].els[0].scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); }, 120);
+  }
+  $('#stack-grid').addEventListener('click', function (e) {
+    var el = e.target.closest('.tag-btn'); if (el) pickTool(el);
+  });
+  $('#stack-grid').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var el = e.target.closest('.tag-btn'); if (!el) return;
+    e.preventDefault(); pickTool(el);
+  });
+  $('#tool-hint').addEventListener('click', function (e) { if (e.target.closest('.tool-clear')) clearTool(); });
 
   /* ---------------- Play a project's request path ---------------- */
   var flowTimers = [];
