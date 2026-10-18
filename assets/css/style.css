@@ -640,3 +640,17 @@ main:focus { outline: none; }
   .contact-links a[href^="http"]::after, .contact-links a[href^="mailto"]::after { content: " (" attr(href) ")"; font-size: 9pt; }
   .contact-links .btn { height: auto; padding: 0; border: 0; background: none; box-shadow: none; color: #0b4f7a; }
 }
+
+/* ---------- Terminal suggestions, footer ---------- */
+.term-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 18px; border-bottom: 1px solid rgba(148,163,184,.12); }
+.term-chips button {
+  font-family: var(--mono); font-size: 12px; color: #9aa6bb; padding: 4px 10px; border-radius: 999px;
+  border: 1px solid rgba(148,163,184,.25); transition: color .2s, border-color .2s;
+}
+.term-chips button:hover { color: #38bdf8; border-color: rgba(56,189,248,.5); }
+.footer-inner { flex-direction: column; gap: 10px; }
+.footer-main, .footer-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px 24px; flex-wrap: wrap; }
+.footer-links { display: flex; gap: 18px; }
+.footer-links a { color: var(--text-soft); font-weight: 500; }
+.footer-links a:hover { color: var(--accent); }
+@media print { .term-chips { display: none; } }

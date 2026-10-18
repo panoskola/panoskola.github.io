@@ -1,0 +1,17 @@
+{
+  "name": "Panayotis Kola — IT Administrator",
+  "short_name": "p.kola",
+  "description": "Personal site and interactive résumé",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#070b14",
+  "theme_color": "#070b14",
+  "icons": [
+    {
+      "src": "assets/img/logo.png",
+      "sizes": "420x420",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

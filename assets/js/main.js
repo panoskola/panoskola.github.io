@@ -608,6 +608,12 @@
   });
 
   /* ---------------- Terminal entry points ---------------- */
+  $('#term-chips').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-run]');
+    if (!b) return;
+    run(b.getAttribute('data-run'));
+    input.focus();
+  });
   $('#term-btn-hero').addEventListener('click', openTerm);
   $$('.t-click').forEach(function (g) {
     function fire() { openTerm(); run(g.getAttribute('data-cmd')); }
@@ -619,5 +625,10 @@
 
   /* ---------------- Init ---------------- */
   $('#year').textContent = new Date().getFullYear();
+  (function showUpdated() {
+    var d = new Date(document.lastModified);
+    if (isNaN(d)) return;
+    $('#updated').textContent = d.toLocaleDateString(lang() === 'el' ? 'el-GR' : 'en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+  })();
   renderAll();
 })();
