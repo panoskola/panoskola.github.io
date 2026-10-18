@@ -38,8 +38,8 @@
   }
 
   function renderStack() {
-    $('#stack-grid').innerHTML = S.stack.map(function (c, i) {
-      return '<article class="stack-card glass reveal" style="--d:' + (i * 0.08) + 's">' +
+    $('#stack-grid').innerHTML = S.stack.map(function (c) {
+      return '<article class="stack-card glass">' +
         '<div class="stack-top"><span class="stack-ico">' + svgIcon(c.icon) + '</span><h3>' + esc(L(c.title)) + '</h3></div>' +
         '<div class="tags">' + c.tags.map(function (tg) { return '<span class="tag">' + esc(tg) + '</span>'; }).join('') + '</div></article>';
     }).join('');
@@ -50,7 +50,7 @@
     var chevron = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
     $('#timeline').innerHTML = S.experience.map(function (r, i) {
       var body = r.groups.map(function (g) {
-        var head = g.sub ? '<div class="t-sub"><span>' + esc(L(g.sub)) + '</span><span>' + esc(L(g.period)) + '</span></div>' : '';
+        var head = g.sub ? '<div class="t-role"><span>' + esc(L(g.sub)) + '</span><span>' + esc(L(g.period)) + '</span></div>' : '';
         return head + '<ul>' + g.bullets.map(function (b) { return '<li>' + esc(L(b)) + '</li>'; }).join('') + '</ul>';
       }).join('');
       var open = openRoles[i] ? ' open' : '';
@@ -82,8 +82,8 @@
       return '<li class="' + (r.done ? 'is-done' : '') + '"><span class="st ' + (r.done ? 'done' : 'next') + '" title="' +
         esc(t(r.done ? 'lab.done' : 'lab.next')) + '">' + (r.done ? '✓' : '') + '</span><span>' + esc(L(r)) + '</span></li>';
     }).join('');
-    $('#incidents').innerHTML = S.incidents.map(function (x, i) {
-      return '<article class="incident glass reveal" style="--d:' + (i * 0.06) + 's">' +
+    $('#incidents').innerHTML = S.incidents.map(function (x) {
+      return '<article class="incident glass">' +
         '<code class="inc-cmd">' + esc(x.cmd) + '</code>' +
         '<h4>' + esc(L(x.title)) + '</h4><p>' + esc(L(x.body)) + '</p>' +
         '<p class="inc-lesson"><b>' + esc(t('lab.lesson')) + '</b>' + esc(L(x.lesson)) + '</p></article>';
@@ -428,7 +428,6 @@
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   $('#term-btn').addEventListener('click', openTerm);
-  $('#term-btn-hero').addEventListener('click', openTerm);
   $('#term-close').addEventListener('click', closeTerm);
   term.addEventListener('click', function (e) { if (e.target === term) closeTerm(); });
   tbody.addEventListener('click', function () { if (!window.getSelection().toString()) input.focus(); });

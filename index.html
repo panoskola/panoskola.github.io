@@ -29,8 +29,8 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=5">
+<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=6">
   <script defer src="https://panoskola-stats.duckdns.org/script.js" data-website-id="fbe08940-e6f8-485b-ab67-b7c868853870" data-domains="panoskola.github.io"></script>
 </head>
 <body>
@@ -81,9 +81,6 @@
         <a class="btn btn-primary" href="assets/cv/Panayotis_Kola_CV.pdf" download>
           <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <span data-i18n="hero.cv">Download CV</span></a>
-        <button class="btn btn-ghost" type="button" id="term-btn-hero">
-          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-          <span data-i18n="hero.terminal">Open terminal</span></button>
         <a class="btn btn-ghost" href="#contact" data-i18n="hero.contact">Get in touch</a>
       </div>
       <p class="hint reveal" data-i18n-html="hero.hint">Tip: press <kbd>`</kbd> anywhere to open the terminal</p>
@@ -103,22 +100,21 @@
       <div class="stat"><span class="stat-num" data-count="3">0</span><span class="stat-label" data-i18n="stat.apple">Years Apple-certified repair</span></div>
     </div>
   </div>
-  <a href="#about" class="scroll-cue" aria-label="Scroll down"><span></span></a>
 </section>
 
 <!-- ============ ABOUT ============ -->
 <section id="about" class="section">
   <div class="wrap">
-    <div class="section-head reveal"><span class="section-label" data-i18n="about.label">About</span><h2 data-i18n="about.title">Profile</h2></div>
+    <div class="section-head"><h2 data-i18n="about.title">Profile</h2></div>
     <div class="about-grid">
-      <div class="about-text reveal">
+      <div class="about-text">
         <p data-i18n="about.p1"></p>
         <p data-i18n="about.p2"></p>
       </div>
       <div class="about-facts">
-        <div class="fact glass reveal"><span class="fact-ico">01</span><div><h3 data-i18n="about.f1t"></h3><p data-i18n="about.f1"></p></div></div>
-        <div class="fact glass reveal"><span class="fact-ico">02</span><div><h3 data-i18n="about.f2t"></h3><p data-i18n="about.f2"></p></div></div>
-        <div class="fact glass reveal"><span class="fact-ico">03</span><div><h3 data-i18n="about.f3t"></h3><p data-i18n="about.f3"></p></div></div>
+        <div class="fact glass"><div><h3 data-i18n="about.f1t"></h3><p data-i18n="about.f1"></p></div></div>
+        <div class="fact glass"><div><h3 data-i18n="about.f2t"></h3><p data-i18n="about.f2"></p></div></div>
+        <div class="fact glass"><div><h3 data-i18n="about.f3t"></h3><p data-i18n="about.f3"></p></div></div>
       </div>
     </div>
   </div>
@@ -127,7 +123,7 @@
 <!-- ============ STACK ============ -->
 <section id="stack" class="section">
   <div class="wrap">
-    <div class="section-head reveal"><span class="section-label" data-i18n="stack.label">Tools &amp; Platforms</span><h2 data-i18n="stack.title">Technical Stack</h2></div>
+    <div class="section-head"><h2 data-i18n="stack.title">Technical Stack</h2></div>
     <div class="stack-grid" id="stack-grid"></div>
   </div>
 </section>
@@ -135,16 +131,16 @@
 <!-- ============ EXPERIENCE ============ -->
 <section id="experience" class="section">
   <div class="wrap">
-    <div class="section-head reveal"><span class="section-label" data-i18n="exp.label">Track Record</span><h2 data-i18n="exp.title">Experience</h2></div>
+    <div class="section-head"><h2 data-i18n="exp.title">Experience</h2></div>
     <ol class="timeline" id="timeline"></ol>
   </div>
 </section>
 
 <!-- ============ LAB ============ -->
-<section id="lab" class="section">
+<section id="lab" class="section feature">
   <div class="wrap">
-    <div class="section-head reveal"><span class="section-label" data-i18n="lab.label">Hands-on</span><h2 data-i18n="lab.title">Windows Server &amp; AD Home Lab</h2></div>
-    <p class="lab-intro reveal" data-i18n="lab.intro"></p>
+    <div class="section-head"><h2 data-i18n="lab.title">Windows Server &amp; AD Home Lab</h2></div>
+    <p class="lab-intro" data-i18n="lab.intro"></p>
 
     <div class="lab-grid">
       <div class="topo glass reveal">
@@ -197,23 +193,23 @@
       </div>
     </div>
 
-    <h3 class="sub-head reveal" data-i18n="lab.broke">What broke, and what it taught me</h3>
+    <h3 class="sub-head" data-i18n="lab.broke">What broke, and what it taught me</h3>
     <div class="incidents" id="incidents"></div>
   </div>
 </section>
 
 <!-- ============ PROJECTS ============ -->
-<section id="projects" class="section">
+<section id="projects" class="section feature">
   <div class="wrap">
-    <div class="section-head reveal"><span class="section-label" data-i18n="proj.label">Built &amp; running</span><h2 data-i18n="proj.title">Projects</h2></div>
+    <div class="section-head"><h2 data-i18n="proj.title">Projects</h2></div>
     <div id="projects-list"></div>
   </div>
 </section>
 
 <!-- ============ CERTS ============ -->
-<section id="certs" class="section">
+<section id="certs" class="section quiet">
   <div class="wrap">
-    <div class="section-head reveal"><span class="section-label" data-i18n="certs.label">Background</span><h2 data-i18n="certs.title">Education &amp; Credentials</h2></div>
+    <div class="section-head"><h2 data-i18n="certs.title">Education &amp; Credentials</h2></div>
     <div class="cert-grid">
       <div class="glass card-pad reveal">
         <h3 class="mini-head" data-i18n="certs.courses">Certifications &amp; Training</h3>
@@ -237,7 +233,6 @@
 <section id="contact" class="section">
   <div class="wrap">
     <div class="contact glass reveal">
-      <span class="section-label" data-i18n="contact.label">Contact</span>
       <h2 data-i18n="contact.title">Let’s talk</h2>
       <p data-i18n="contact.text"></p>
       <div class="contact-links">
@@ -280,6 +275,6 @@
 
 <noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 <script src="assets/js/content.js?v=6"></script>
-<script src="assets/js/main.js?v=5"></script>
+<script src="assets/js/main.js?v=6"></script>
 </body>
 </html>
