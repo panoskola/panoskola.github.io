@@ -616,7 +616,22 @@
   });
   $('#term-btn-hero').addEventListener('click', openTerm);
   $$('.t-click').forEach(function (g) {
-    function fire() { openTerm(); run(g.getAttribute('data-cmd')); }
+    function fire() {
+      var cmd = g.getAttribute('data-cmd'), p = document.getElementById(g.getAttribute('data-ping'));
+      if (g.dataset.busy) return;
+      if (reduceMotion || !p) { openTerm(); run(cmd); return; }
+      g.dataset.busy = '1';
+      p.classList.remove('go'); void p.getBoundingClientRect(); p.classList.add('go');
+      g.classList.add('pinged');
+      var dead = p.classList.contains('t-ping-bad'), ghost = $('.t-ghost');
+      if (dead && ghost) setTimeout(function () { ghost.classList.add('flash'); }, 750);
+      setTimeout(function () {
+        p.classList.remove('go'); g.classList.remove('pinged');
+        if (ghost) ghost.classList.remove('flash');
+        delete g.dataset.busy;
+        openTerm(); run(cmd);
+      }, dead ? 1150 : 950);
+    }
     g.addEventListener('click', fire);
     g.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); }

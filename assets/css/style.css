@@ -654,3 +654,16 @@ main:focus { outline: none; }
 .footer-links a { color: var(--text-soft); font-weight: 500; }
 .footer-links a:hover { color: var(--accent); }
 @media print { .term-chips { display: none; } }
+
+/* ---------- One-shot ping packet (lab topology) ---------- */
+.t-ping { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 6 200; stroke-dashoffset: 6; opacity: 0; pointer-events: none; filter: drop-shadow(0 0 5px var(--accent)); }
+.t-ping.go { animation: ping-run .85s cubic-bezier(.4,0,.6,1) forwards; }
+.t-ping-bad { stroke: var(--bad); filter: drop-shadow(0 0 5px var(--bad)); }
+.t-ping-bad.go { animation-name: ping-run-bad; animation-duration: .75s; }
+@keyframes ping-run { 0% { opacity: 1; stroke-dashoffset: 6; } 92% { opacity: 1; } 100% { opacity: 0; stroke-dashoffset: -100; } }
+@keyframes ping-run-bad { 0% { opacity: 1; stroke-dashoffset: 6; } 100% { opacity: 1; stroke-dashoffset: -88; } }
+.t-led { transform-box: fill-box; transform-origin: center; }
+.t-click.pinged .t-led { animation: led-hit .4s ease .8s 2; }
+@keyframes led-hit { 50% { opacity: 1; transform: scale(1.9); } }
+.t-ghost.flash { animation: ghost-flash .4s ease 2; }
+@keyframes ghost-flash { 50% { stroke-width: 3.5; opacity: 1; filter: drop-shadow(0 0 6px var(--bad)); } }
