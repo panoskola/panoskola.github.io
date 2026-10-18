@@ -57,13 +57,13 @@
       var muted = i === 0 ? ' muted' : '';
       return '<li class="t-item reveal' + open + muted + '" data-i="' + i + '">' +
         '<div class="t-card glass">' +
-          '<button class="t-head" type="button" aria-expanded="' + (!!openRoles[i]) + '">' +
+          '<button class="t-head" type="button" aria-controls="role-' + i + '" aria-expanded="' + (!!openRoles[i]) + '">' +
             '<span><span class="t-title">' + esc(L(r.title)) + '</span><br><span class="t-org"><b>' + esc(r.org) + '</b> · ' + esc(L(r.place)) + '</span></span>' +
             '<span class="t-period">' + esc(L(r.period)) + '</span>' +
             '<span class="t-scope">' + esc(L(r.scope)) + '</span>' +
             '<span class="t-toggle">' + (lang() === 'el' ? 'λεπτομέρειες' : 'details') + ' ' + chevron + '</span>' +
           '</button>' +
-          '<div class="t-body"><div><div class="t-inner">' + body + '</div></div></div>' +
+          '<div class="t-body" id="role-' + i + '"><div><div class="t-inner">' + body + '</div></div></div>' +
         '</div></li>';
     }).join('');
     $$('#timeline .t-head').forEach(function (btn) {
@@ -199,7 +199,11 @@
     var secObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) {
-          $$('#nav-links a').forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id); });
+          $$('#nav-links a').forEach(function (a) {
+            var on = a.getAttribute('href') === '#' + en.target.id;
+            a.classList.toggle('active', on);
+            if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+          });
         }
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
@@ -339,7 +343,8 @@
       W = window.innerWidth; H = window.innerHeight;
       cv.width = W * dpr; cv.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      var target = Math.min(110, Math.round((W * H) / 15000));
+      var small = W < 640 || (navigator.connection && navigator.connection.saveData);
+      var target = small ? Math.min(40, Math.round((W * H) / 24000)) : Math.min(110, Math.round((W * H) / 15000));
       while (nodes.length < target) nodes.push(mk());
       nodes.length = target;
       if (reduceMotion) draw();
@@ -600,6 +605,16 @@
       else if (m.length > 1) print(PS + ' ' + esc(input.value) + '\n' + m.join('  '));
     }
     else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); out.innerHTML = ''; }
+  });
+
+  /* ---------------- Terminal entry points ---------------- */
+  $('#term-btn-hero').addEventListener('click', openTerm);
+  $$('.t-click').forEach(function (g) {
+    function fire() { openTerm(); run(g.getAttribute('data-cmd')); }
+    g.addEventListener('click', fire);
+    g.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); }
+    });
   });
 
   /* ---------------- Init ---------------- */

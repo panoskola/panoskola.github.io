@@ -10,6 +10,7 @@ Static site for GitHub Pages. No build step: HTML, CSS and vanilla JavaScript.
 - `assets/js/main.js` — rendering, language/theme switch, animated network background, interactive terminal
 - `assets/cv/Panayotis_Kola_CV.pdf` — downloadable CV
 - `assets/img/` — logo and social preview image
+- `assets/fonts/` — self-hosted Commissioner and JetBrains Mono (SIL Open Font License), Latin and Greek subsets
 
 Press <kbd>`</kbd> on the site to open the terminal.
 

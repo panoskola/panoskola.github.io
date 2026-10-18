@@ -27,13 +27,12 @@
     document.documentElement.setAttribute('lang', l);
   })();
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=7">
+<link rel="preload" href="assets/fonts/commissioner-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css?v=8">
   <script defer src="https://panoskola-stats.duckdns.org/script.js" data-website-id="fbe08940-e6f8-485b-ab67-b7c868853870" data-domains="panoskola.github.io"></script>
 </head>
 <body>
+<a class="skip-link" href="#main" data-i18n="a11y.skip">Skip to content</a>
 
 <canvas id="net-bg" aria-hidden="true"></canvas>
 <div class="bg-glow" aria-hidden="true"></div>
@@ -68,7 +67,7 @@
   </div>
 </header>
 
-<main>
+<main id="main" tabindex="-1">
 <!-- ============ HERO ============ -->
 <section class="hero" id="hero">
   <div class="wrap hero-grid">
@@ -82,6 +81,9 @@
           <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <span data-i18n="hero.cv">Download CV</span></a>
         <a class="btn btn-ghost" href="#contact" data-i18n="hero.contact">Get in touch</a>
+        <button class="btn btn-ghost touch-only" type="button" id="term-btn-hero">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          <span data-i18n="hero.terminal">Open terminal</span></button>
       </div>
       <p class="hint reveal" data-i18n-html="hero.hint">Tip: press <kbd>`</kbd> anywhere to open the terminal</p>
     </div>
@@ -163,25 +165,32 @@
           <path d="M240 108 V160 H120 V210" class="t-packet"/>
           <path d="M320 108 V160 H440 V210" class="t-packet t-packet-2"/>
           <!-- DC01 -->
-          <rect x="28" y="210" width="184" height="88" rx="12" class="t-node"/>
-          <text x="120" y="236" class="t-name" text-anchor="middle">DC01</text>
-          <text x="120" y="255" class="t-sub" text-anchor="middle">Windows Server 2022</text>
-          <text x="120" y="271" class="t-sub" text-anchor="middle">AD DS · DNS · lab.local</text>
-          <text x="120" y="289" class="t-ip" text-anchor="middle">192.168.10.10</text>
-          <circle cx="198" cy="222" r="5" class="t-led"/>
+          <g class="t-click" data-cmd="ping dc01" role="button" tabindex="0" aria-label="DC01: run ping dc01 in the terminal">
+            <rect x="28" y="210" width="184" height="88" rx="12" class="t-node"/>
+            <text x="120" y="236" class="t-name" text-anchor="middle">DC01</text>
+            <text x="120" y="255" class="t-sub" text-anchor="middle">Windows Server 2022</text>
+            <text x="120" y="271" class="t-sub" text-anchor="middle">AD DS · DNS · lab.local</text>
+            <text x="120" y="289" class="t-ip" text-anchor="middle">192.168.10.10</text>
+            <circle cx="198" cy="222" r="5" class="t-led"/>
+          </g>
           <!-- CLIENT01 -->
-          <rect x="348" y="210" width="184" height="88" rx="12" class="t-node"/>
-          <text x="440" y="236" class="t-name" text-anchor="middle">CLIENT01</text>
-          <text x="440" y="255" class="t-sub" text-anchor="middle">Windows 11 Enterprise</text>
-          <text x="440" y="271" class="t-sub" text-anchor="middle">domain-joined · lab.local</text>
-          <text x="440" y="289" class="t-ip" text-anchor="middle">192.168.10.50</text>
-          <circle cx="518" cy="222" r="5" class="t-led"/>
+          <g class="t-click" data-cmd="ipconfig" role="button" tabindex="0" aria-label="CLIENT01: run ipconfig in the terminal">
+            <rect x="348" y="210" width="184" height="88" rx="12" class="t-node"/>
+            <text x="440" y="236" class="t-name" text-anchor="middle">CLIENT01</text>
+            <text x="440" y="255" class="t-sub" text-anchor="middle">Windows 11 Enterprise</text>
+            <text x="440" y="271" class="t-sub" text-anchor="middle">domain-joined · lab.local</text>
+            <text x="440" y="289" class="t-ip" text-anchor="middle">192.168.10.50</text>
+            <circle cx="518" cy="222" r="5" class="t-led"/>
+          </g>
           <!-- gateway -->
-          <rect x="230" y="240" width="100" height="44" rx="10" class="t-ghost"/>
-          <text x="280" y="259" class="t-sub" text-anchor="middle">GW .1</text>
-          <text x="280" y="275" class="t-x" text-anchor="middle">✕ no reply</text>
+          <g class="t-click" data-cmd="ping 192.168.10.1" role="button" tabindex="0" aria-label="Gateway: run ping 192.168.10.1 in the terminal">
+            <rect x="230" y="240" width="100" height="44" rx="10" class="t-ghost"/>
+            <text x="280" y="259" class="t-sub" text-anchor="middle">GW .1</text>
+            <text x="280" y="275" class="t-x" text-anchor="middle">✕ no reply</text>
+          </g>
         </svg>
         <p class="topo-note"><span class="t-dash"></span><span data-i18n="lab.gw">gateway · intentionally absent</span></p>
+        <p class="topo-hint" data-i18n="lab.try">Click a machine to run a command on it in the terminal.</p>
       </div>
 
       <div class="roadmap glass reveal">
@@ -277,7 +286,7 @@
 </div>
 
 <noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
-<script src="assets/js/content.js?v=7"></script>
-<script src="assets/js/main.js?v=7"></script>
+<script src="assets/js/content.js?v=8"></script>
+<script src="assets/js/main.js?v=8"></script>
 </body>
 </html>
