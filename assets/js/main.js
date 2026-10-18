@@ -229,7 +229,7 @@
     bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0) + ')';
   }
   window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  window.addEventListener('load', function () { requestAnimationFrame(onScroll); });
 
   if ('IntersectionObserver' in window) {
     var secObs = new IntersectionObserver(function (entries) {
@@ -606,6 +606,35 @@
       setTheme(th); return C('c-ok', 'theme → ' + th);
     } },
     history: { d: 'command history', f: function () { return hist.map(function (h, i) { return C('c-dim', (i + 1) + '  ') + esc(h); }).join('\n') || C('c-dim', '(empty)'); } },
+    neofetch: { d: 'system summary (alias: fetch)', f: function () {
+      var art = [
+        '  ┌────────────┐',
+        '  │ ▪ ▪ ▪ ▪ ▪▪ │',
+        '  ├────────────┤',
+        '  │ ▪ ▪ ▪ ▪ ▪▪ │',
+        '  ├────────────┤',
+        '  │ ▪ ▪ ▪ ▪ ▪▪ │',
+        '  └─────┬┬─────┘',
+        '        ││      ',
+        '    ────┴┴────  ',
+        '                '
+      ];
+      var info = [
+        C('c-acc', 'pkola') + '@' + C('c-acc', 'lab'),
+        C('c-dim', '-----------'),
+        C('c-acc', 'Role       ') + 'IT Administrator',
+        C('c-acc', 'Location   ') + 'Athens, Greece',
+        C('c-acc', 'Uptime     ') + '9+ years in IT',
+        C('c-acc', 'Lab        ') + 'Windows Server 2022 · AD DS · Hyper-V',
+        C('c-acc', 'Cloud      ') + 'Oracle Cloud · Docker · Caddy',
+        C('c-acc', 'Admin      ') + 'Google Workspace · M365 · JumpCloud',
+        C('c-acc', 'Languages  ') + 'Greek · English (B2)',
+        C('c-acc', 'Studying   ') + 'CompTIA Network+'
+      ];
+      var lines = art.map(function (a, i) { return C('c-acc2', a) + '  ' + (info[i] || ''); });
+      lines.push('', '                    ' + C('c-acc', '███') + C('c-ok', '███') + C('c-warn', '███') + C('c-bad', '███') + C('c-acc2', '███'));
+      return lines.join('\n');
+    } },
     date: { d: 'current date/time', f: function () { return new Date().toString(); } },
     clear: { d: 'clear the screen (alias: cls)', f: function () { out.innerHTML = ''; return null; } },
     exit: { d: 'close the terminal', f: function () { setTimeout(closeTerm, 120); return C('c-dim', 'logout'); } },
@@ -613,7 +642,7 @@
     ls: { hidden: true, f: function () { return C('c-acc', 'about/  experience/  lab/  certs/') + '  cv.pdf  contact.txt'; } },
     echo: { hidden: true, f: function (args) { return esc(args.join(' ')); } }
   };
-  var ALIAS = { exp: 'experience', cls: 'clear', quit: 'exit', '?': 'help', man: 'help', 'get-help': 'help', 'test-connection': 'ping', resume: 'cv' };
+  var ALIAS = { exp: 'experience', cls: 'clear', quit: 'exit', '?': 'help', man: 'help', 'get-help': 'help', 'test-connection': 'ping', resume: 'cv', fetch: 'neofetch' };
 
   var streaming = false;
   function printSeq(parts, delay) {
