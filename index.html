@@ -61,7 +61,7 @@
   })();
 </script>
 <link rel="preload" href="assets/fonts/commissioner-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/style.css?v=15">
+<link rel="stylesheet" href="assets/css/style.css?v=16">
   <script defer src="https://panoskola-stats.duckdns.org/script.js" data-website-id="fbe08940-e6f8-485b-ab67-b7c868853870" data-domains="panoskola.github.io"></script>
 </head>
 <body>
@@ -193,22 +193,23 @@
           <text x="280" y="82" class="t-name" text-anchor="middle">vSwitch “LAB” (Internal)</text>
           <text x="280" y="99" class="t-ip" text-anchor="middle">192.168.10.0/24</text>
           <!-- links -->
-          <path d="M240 108 V160 H120 V210" class="t-link"/>
+          <path d="M240 108 V160 H120 V210" class="t-link link-dc01"/>
           <path d="M320 108 V160 H440 V210" class="t-link"/>
           <path d="M280 108 V240" class="t-link t-dead"/>
-          <path d="M240 108 V160 H120 V210" class="t-packet"/>
+          <path d="M240 108 V160 H120 V210" class="t-packet pk-dc01"/>
           <path d="M320 108 V160 H440 V210" class="t-packet t-packet-2"/>
           <!-- one-shot ping packets, played when a machine is clicked -->
           <path id="ping-dc01" d="M240 108 V160 H120 V210" pathLength="100" class="t-ping"/>
+          <path id="ping-dc01-bad" d="M240 108 V160 H120 V198" pathLength="100" class="t-ping t-ping-bad"/>
           <path id="ping-client" d="M320 108 V160 H440 V210" pathLength="100" class="t-ping"/>
           <path id="ping-gw" d="M280 108 V236" pathLength="100" class="t-ping t-ping-bad"/>
           <!-- DC01 -->
-          <g class="t-click" data-cmd="ping dc01" data-ping="ping-dc01" role="button" tabindex="0" aria-label="DC01: run ping dc01 in the terminal">
+          <g class="t-click dc01" data-cmd="ping dc01" data-ping="ping-dc01" role="button" tabindex="0" aria-label="DC01: run ping dc01 in the terminal">
             <rect x="28" y="210" width="184" height="88" rx="12" class="t-node"/>
             <text x="120" y="236" class="t-name" text-anchor="middle">DC01</text>
             <text x="120" y="255" class="t-sub" text-anchor="middle">Windows Server 2022</text>
             <text x="120" y="271" class="t-sub" text-anchor="middle">AD DS · DNS · lab.local</text>
-            <text x="120" y="289" class="t-ip" text-anchor="middle">192.168.10.10</text>
+            <text x="120" y="289" class="t-ip" id="dc-ip" text-anchor="middle">192.168.10.10</text>
             <circle cx="198" cy="222" r="5" class="t-led"/>
           </g>
           <!-- CLIENT01 -->
@@ -229,6 +230,8 @@
         </svg>
         <p class="topo-note"><span class="t-dash"></span><span data-i18n="lab.gw">gateway · intentionally absent</span></p>
         <p class="topo-hint" data-i18n="lab.try">Click a machine to run a command on it in the terminal.</p>
+        <div class="break-bar"><button class="break-btn" id="break-btn" type="button" aria-pressed="false">Break it</button>
+          <p class="break-note" id="break-note" aria-live="polite"></p></div>
       </div>
 
       <div class="roadmap glass reveal">
@@ -342,7 +345,7 @@
 </div>
 
 <noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
-<script src="assets/js/content.js?v=16"></script>
-<script src="assets/js/main.js?v=15"></script>
+<script src="assets/js/content.js?v=17"></script>
+<script src="assets/js/main.js?v=16"></script>
 </body>
 </html>

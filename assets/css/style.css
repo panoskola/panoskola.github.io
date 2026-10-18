@@ -743,3 +743,18 @@ html.vt-theme::view-transition-old(root) { z-index: 1; }
 .t-item::before { transition: background .3s, border-color .3s, box-shadow .3s; }
 .t-item.passed::before { background: var(--accent); border-color: var(--accent); }
 @media print { .timeline::after { display: none; } }
+
+/* ---------- Break / fix the lab ---------- */
+.break-bar { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+.break-btn { flex: none; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 999px; color: var(--bad); border: 1px solid color-mix(in srgb, var(--bad) 55%, transparent); transition: background .2s, color .2s, border-color .2s; }
+.break-btn:hover { background: color-mix(in srgb, var(--bad) 12%, transparent); }
+.break-btn[aria-pressed="true"] { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 55%, transparent); }
+.break-btn[aria-pressed="true"]:hover { background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.break-note { flex: 1 1 220px; min-height: 2.8em; font-size: 13px; color: var(--text-soft); }
+.topo-svg.broken .dc01 .t-node { stroke: var(--bad); fill: color-mix(in srgb, var(--bad) 12%, var(--surface-solid)); }
+.topo-svg.broken .dc01 .t-ip { fill: var(--bad); }
+.topo-svg.broken .dc01 .t-led { fill: var(--bad); animation: none; }
+.topo-svg.broken .link-dc01 { stroke: var(--bad); stroke-dasharray: 4 5; opacity: .6; }
+.topo-svg.broken .pk-dc01 { display: none; }
+.t-node.flash { animation: ghost-flash .4s ease 2; }
+@media print { .break-bar { display: none; } }
