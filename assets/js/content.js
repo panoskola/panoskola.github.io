@@ -33,7 +33,8 @@ window.SITE = {
       'certs.prep': 'In preparation', 'certs.done': 'Completed',
       'contact.label': 'Contact', 'contact.title': 'Let’s talk',
       'contact.text': 'Open to IT Administrator and systems roles in Athens, hybrid or remote. The fastest way to reach me is email.',
-      'contact.email': 'Email me', 'footer': 'Built with HTML, CSS & vanilla JavaScript, with help from Claude · Hosted on GitHub Pages',
+      'contact.email': 'Email me', 'contact.copy': 'Copy email', 'contact.copied': 'Copied',
+      'footer': 'Built with HTML, CSS & vanilla JavaScript, with help from Claude · Hosted on GitHub Pages',
       'theme.toggle': 'Toggle light / dark theme', 'lang.toggle': 'Αλλαγή σε Ελληνικά',
       'term.title': 'pkola@lab: ~', 'term.close': 'Close terminal'
     },
@@ -69,7 +70,8 @@ window.SITE = {
       'certs.prep': 'Σε προετοιμασία', 'certs.done': 'Ολοκληρώθηκε',
       'contact.label': 'Επικοινωνία', 'contact.title': 'Ας μιλήσουμε',
       'contact.text': 'Ανοιχτός σε θέσεις IT Administrator και systems στην Αθήνα, υβριδικά ή remote. Ο πιο γρήγορος τρόπος να με βρείτε είναι το email.',
-      'contact.email': 'Στείλτε email', 'footer': 'Φτιαγμένο με HTML, CSS & vanilla JavaScript, με τη βοήθεια του Claude · Φιλοξενείται στο GitHub Pages',
+      'contact.email': 'Στείλτε email', 'contact.copy': 'Αντιγραφή email', 'contact.copied': 'Αντιγράφηκε',
+      'footer': 'Φτιαγμένο με HTML, CSS & vanilla JavaScript, με τη βοήθεια του Claude · Φιλοξενείται στο GitHub Pages',
       'theme.toggle': 'Αλλαγή φωτεινού / σκοτεινού θέματος', 'lang.toggle': 'Switch to English',
       'term.title': 'pkola@lab: ~', 'term.close': 'Κλείσιμο terminal'
     }
