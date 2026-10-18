@@ -29,7 +29,7 @@ window.SITE = {
       'proj.label': 'Built & running', 'proj.title': 'Projects',
       'proj.flow': 'Request path', 'proj.stack': 'Stack', 'proj.learned': 'What broke, and what it taught me',
       'proj.repo': 'View code & runbook on GitHub',
-      'proj.pipeline': 'Pipeline', 'proj.learned2': 'What I learned', 'proj.code': 'View code on GitHub',
+      'tool.hint': 'Click a tool to see where I used it.', 'tool.in': 'Used in', 'tool.clear': 'Clear', 'proj.play': 'Play the path', 'proj.replay': 'Play again', 'proj.pipeline': 'Pipeline', 'proj.learned2': 'What I learned', 'proj.code': 'View code on GitHub',
       'certs.label': 'Background', 'certs.title': 'Education & Credentials',
       'certs.edu': 'Education', 'certs.courses': 'Certifications & Training', 'certs.lang': 'Languages',
       'certs.prep': 'In preparation', 'certs.done': 'Completed',
@@ -68,7 +68,7 @@ window.SITE = {
       'proj.label': 'Στημένα & σε λειτουργία', 'proj.title': 'Projects',
       'proj.flow': 'Διαδρομή αιτήματος', 'proj.stack': 'Τεχνολογίες', 'proj.learned': 'Τι χάλασε και τι μου έμαθε',
       'proj.repo': 'Κώδικας & runbook στο GitHub',
-      'proj.pipeline': 'Ροή', 'proj.learned2': 'Τι έμαθα', 'proj.code': 'Ο κώδικας στο GitHub',
+      'tool.hint': 'Πάτησε ένα εργαλείο για να δεις πού το χρησιμοποίησα.', 'tool.in': 'Χρησιμοποιήθηκε σε', 'tool.clear': 'Καθαρισμός', 'proj.play': 'Παίξε τη διαδρομή', 'proj.replay': 'Ξανά', 'proj.pipeline': 'Ροή', 'proj.learned2': 'Τι έμαθα', 'proj.code': 'Ο κώδικας στο GitHub',
       'certs.label': 'Υπόβαθρο', 'certs.title': 'Σπουδές & Πιστοποιήσεις',
       'certs.edu': 'Σπουδές', 'certs.courses': 'Πιστοποιήσεις & Εκπαίδευση', 'certs.lang': 'Γλώσσες',
       'certs.prep': 'Σε προετοιμασία', 'certs.done': 'Ολοκληρώθηκε',
@@ -96,6 +96,22 @@ window.SITE = {
     { icon: 'server', title: { en: 'Servers & Networking', el: 'Servers & Δίκτυα' },
       tags: ['Windows Server 2022 (lab)', 'AD DS · DNS', 'Hyper-V', 'TCP/IP · DHCP', 'Wireshark', 'Packet Tracer', '3CX'] }
   ],
+
+  /* Words to look for in the page text when a tool tag is clicked. A tag not listed here is searched for by its own name. */
+  toolKeys: {
+    'Google Workspace Admin': ['google workspace'],
+    'Microsoft 365 Admin': ['microsoft 365'],
+    'RBAC': ['role-based', 'βάσει ρόλων'],
+    'Onboarding / Offboarding': ['onboarding'],
+    'Trend Micro Apex One': ['trend micro'],
+    'Patch Management': ['patched', 'patching'],
+    'JumpCloud MDM': ['jumpcloud'],
+    'Windows · macOS · iOS': [],
+    'Windows Server 2022 (lab)': ['windows server'],
+    'AD DS · DNS': ['active directory', 'ad ds'],
+    'TCP/IP · DHCP': ['dhcp'],
+    'Packet Tracer': []
+  },
 
   experience: [
     {
@@ -253,6 +269,14 @@ window.SITE = {
       desc: { en: 'Umami analytics on an Oracle Cloud Always Free VM (Ubuntu 24.04, Ampere ARM). Docker Compose runs Caddy, Umami and PostgreSQL; Caddy obtains and renews the Let’s Encrypt certificate on its own. Only ports 22, 80 and 443 are open, the database stays on the internal Docker network, and a nightly pg_dump keeps 14 days of backups. Cookieless, so the site needs no consent banner.',
               el: 'Umami analytics σε Oracle Cloud Always Free VM (Ubuntu 24.04, Ampere ARM). Το Docker Compose τρέχει Caddy, Umami και PostgreSQL· ο Caddy εκδίδει και ανανεώνει μόνος του το πιστοποιητικό Let’s Encrypt. Ανοιχτές είναι μόνο οι θύρες 22, 80 και 443, η βάση μένει στο εσωτερικό δίκτυο του Docker και ένα νυχτερινό pg_dump κρατάει backups 14 ημερών. Χωρίς cookies, οπότε το site δεν χρειάζεται banner συναίνεσης.' },
       flow: ['panoskola.github.io', 'script.js', 'DuckDNS', 'Caddy · HTTPS', 'Umami', 'PostgreSQL'],
+      steps: [
+        { en: 'A visitor opens the site.', el: 'Ένας επισκέπτης ανοίγει τον ιστότοπο.' },
+        { en: 'The page loads the Umami tracking script.', el: 'Η σελίδα φορτώνει το script παρακολούθησης του Umami.' },
+        { en: 'The script’s address is resolved through DuckDNS to my Oracle Cloud VM.', el: 'Η διεύθυνση του script επιλύεται μέσω DuckDNS στο VM μου στο Oracle Cloud.' },
+        { en: 'Caddy answers on port 443 and handles the Let’s Encrypt certificate itself.', el: 'Ο Caddy απαντά στη θύρα 443 και διαχειρίζεται μόνος του το πιστοποιητικό Let’s Encrypt.' },
+        { en: 'Umami counts the visit. It sets no cookies, so the site needs no consent banner.', el: 'Το Umami μετράει την επίσκεψη. Δεν βάζει cookies, οπότε δεν χρειάζεται banner συναίνεσης.' },
+        { en: 'The record is saved in PostgreSQL, which is only reachable on the internal Docker network.', el: 'Η εγγραφή αποθηκεύεται στην PostgreSQL, που φαίνεται μόνο στο εσωτερικό δίκτυο του Docker.' }
+      ],
       tags: ['Oracle Cloud (OCI)', 'Ubuntu 24.04', 'Docker Compose', 'Caddy', 'PostgreSQL 16', 'Let’s Encrypt', 'DuckDNS', 'iptables', 'cron'],
       lessons: [
         { en: 'The VM came up on end-of-life Ubuntu 20.04 and Docker would not install. I rebuilt it on 24.04 instead of patching around it.',
@@ -276,6 +300,12 @@ window.SITE = {
       desc: { en: 'Two Python scripts that run on a schedule in GitHub Actions, so there is no server to maintain. Every morning they pull the day’s fixtures and the previous day’s results from the football-data.org REST API and post them to a Discord channel through a webhook, one embed card per match: kickoff times in Greek time before the games, final scores with the winner marked after them. The API token and the webhook URL are stored as GitHub Actions secrets.',
               el: 'Δύο Python scripts που τρέχουν προγραμματισμένα στο GitHub Actions, χωρίς server να συντηρώ. Κάθε πρωί τραβάνε τους αγώνες της ημέρας και τα αποτελέσματα της προηγούμενης από το REST API του football-data.org και τα στέλνουν σε κανάλι Discord μέσω webhook, μία κάρτα (embed) ανά αγώνα: ώρα έναρξης σε ώρα Ελλάδας πριν τα παιχνίδια, τελικό σκορ με σημειωμένο νικητή μετά. Το API token και το webhook URL φυλάσσονται ως GitHub Actions secrets.' },
       flow: ['GitHub Actions · cron', 'Python 3.12', 'football-data.org API', 'Discord webhook'],
+      steps: [
+        { en: 'A scheduled GitHub Actions job starts every morning.', el: 'Μια προγραμματισμένη εργασία του GitHub Actions ξεκινά κάθε πρωί.' },
+        { en: 'A Python script runs and reads the API token and webhook URL from GitHub Actions secrets.', el: 'Τρέχει ένα Python script που διαβάζει το API token και το webhook URL από τα GitHub Actions secrets.' },
+        { en: 'It asks football-data.org for the day’s fixtures and the previous day’s results.', el: 'Ζητά από το football-data.org τους αγώνες της ημέρας και τα αποτελέσματα της προηγούμενης.' },
+        { en: 'It posts one card per match to the Discord channel through the webhook.', el: 'Στέλνει μία κάρτα ανά αγώνα στο κανάλι Discord μέσω του webhook.' }
+      ],
       tags: ['Python 3.12', 'requests', 'GitHub Actions', 'cron', 'REST API', 'Discord webhooks', 'GitHub Secrets', 'zoneinfo'],
       lessons: [
         { en: 'Matches landed on the wrong day: Greek midnight split the tournament’s match days. The fix was to anchor the “match day” to US Eastern time, like the official schedules, and only display kickoff times in Greek time.',

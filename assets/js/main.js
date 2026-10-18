@@ -41,7 +41,7 @@
     $('#stack-grid').innerHTML = S.stack.map(function (c) {
       return '<article class="stack-card glass">' +
         '<div class="stack-top"><span class="stack-ico">' + svgIcon(c.icon) + '</span><h3>' + esc(L(c.title)) + '</h3></div>' +
-        '<div class="tags">' + c.tags.map(function (tg) { return '<span class="tag">' + esc(tg) + '</span>'; }).join('') + '</div></article>';
+        '<div class="tags">' + c.tags.map(function (tg) { return '<span class="tag" data-tag="' + esc(tg) + '">' + esc(tg) + '</span>'; }).join('') + '</div></article>';
     }).join('');
   }
 
@@ -73,6 +73,7 @@
         openRoles[i] = !item.classList.contains('open');
         item.classList.toggle('open', openRoles[i]);
         btn.setAttribute('aria-expanded', openRoles[i]);
+        setTimeout(queueTimeline, 500);
       });
     });
   }
@@ -107,15 +108,18 @@
 
   function renderProjects() {
     var gh = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.29-1.69-1.29-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>';
-    $('#projects-list').innerHTML = (S.projects || []).map(function (p) {
+    flowTimers.forEach(clearTimeout); flowTimers = [];
+    $('#projects-list').innerHTML = (S.projects || []).map(function (p, pi) {
       var flow = p.flow.map(function (f, i) {
         return (i ? '<span class="pf-link" aria-hidden="true"></span>' : '') + '<span class="pf-node">' + esc(f) + '</span>';
       }).join('');
-      return '<article class="proj glass reveal">' +
+      return '<article class="proj glass reveal" data-p="' + pi + '">' +
         '<header class="proj-head"><div><h3 class="proj-title">' + esc(L(p.title)) + '</h3><p class="proj-tag">' + esc(L(p.tagline)) + '</p></div>' +
         '<div class="proj-meta"><span class="badge ok proj-live">' + esc(L(p.status)) + '</span><span class="t-period">' + esc(p.period) + '</span></div></header>' +
         '<p class="proj-desc">' + esc(L(p.desc)) + '</p>' +
         '<h4 class="mini-head">' + esc(t(p.flowKey || 'proj.flow')) + '</h4><div class="proj-flow">' + flow + '</div>' +
+        (p.steps ? '<div class="flow-bar"><button class="flow-play" type="button">' + esc(t('proj.play')) + '</button>' +
+          '<p class="flow-cap" aria-live="polite"></p></div>' : '') +
         '<div class="proj-grid"><div><h4 class="mini-head">' + esc(t('proj.stack')) + '</h4><div class="tags">' +
           p.tags.map(function (tg) { return '<span class="tag">' + esc(tg) + '</span>'; }).join('') + '</div></div>' +
         '<div><h4 class="mini-head">' + esc(t(p.learnedKey || 'proj.learned')) + '</h4><ul class="proj-lessons">' +
@@ -132,6 +136,8 @@
     renderLab();
     renderProjects();
     renderCerts();
+    markTools();
+    queueTimeline();
     observeReveals();
     bindGlass();
     bindTilt();
@@ -230,6 +236,22 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('load', function () { requestAnimationFrame(onScroll); });
+
+  /* The experience line fills as you scroll past it, and each role's dot lights up once you reach it */
+  var tl = $('#timeline'), tlQueued = false;
+  function updateTimeline() {
+    if (!tl) return;
+    var r = tl.getBoundingClientRect(), mid = window.innerHeight * 0.5;
+    tl.style.setProperty('--tl', Math.max(0, Math.min(1, (mid - r.top) / r.height)).toFixed(3));
+    $$('.t-item', tl).forEach(function (li) { li.classList.toggle('passed', li.getBoundingClientRect().top + 26 < mid); });
+  }
+  function queueTimeline() {
+    if (tlQueued) return;
+    tlQueued = true;
+    requestAnimationFrame(function () { tlQueued = false; updateTimeline(); });
+  }
+  window.addEventListener('scroll', queueTimeline, { passive: true });
+  window.addEventListener('resize', queueTimeline);
 
   if ('IntersectionObserver' in window) {
     var secObs = new IntersectionObserver(function (entries) {
@@ -713,6 +735,112 @@
     g.addEventListener('click', fire);
     g.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); }
+    });
+  });
+
+  /* ---------------- Click a tool, see where it was used ---------------- */
+  var activeTool = null;
+
+  function toolKeys(tag) {
+    var k = (S.toolKeys || {})[tag];
+    return k ? k : [tag.toLowerCase()];
+  }
+  function toolTargets() {
+    var out = [];
+    $$('#timeline .t-item').forEach(function (li) {
+      out.push({ kind: 'role', item: li, els: [$('.t-card', li)], name: $('.t-org b', li).textContent, text: li.textContent.toLowerCase() });
+    });
+    $$('#projects-list .proj').forEach(function (a) {
+      out.push({ kind: 'proj', els: [a], name: $('.proj-title', a).textContent, text: a.textContent.toLowerCase() });
+    });
+    var lab = $('#lab');
+    if (lab) out.push({ kind: 'lab', els: $$('.topo, .roadmap', lab), name: t('nav.lab'), text: lab.textContent.toLowerCase() });
+    return out;
+  }
+  function toolHits(tag, targets) {
+    var keys = toolKeys(tag);
+    return targets.filter(function (tg) { return keys.some(function (k) { return k && tg.text.indexOf(k) >= 0; }); });
+  }
+  function toolHint(html) { var h = $('#tool-hint'); if (h) h.innerHTML = html; }
+
+  function clearTool() {
+    activeTool = null;
+    $$('.hit, .dim').forEach(function (el) { el.classList.remove('hit', 'dim'); });
+    $$('#stack-grid .tag-btn').forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+    toolHint(esc(t('tool.hint')));
+  }
+  function markTools() {
+    var targets = toolTargets();
+    $$('#stack-grid .tag').forEach(function (el) {
+      if (!toolHits(el.getAttribute('data-tag'), targets).length) return;
+      el.classList.add('tag-btn');
+      el.setAttribute('role', 'button'); el.tabIndex = 0; el.setAttribute('aria-pressed', 'false');
+    });
+    clearTool();
+  }
+  function pickTool(el) {
+    var tag = el.getAttribute('data-tag');
+    if (activeTool === tag) { clearTool(); return; }
+    clearTool();
+    activeTool = tag;
+    var targets = toolTargets(), hits = toolHits(tag, targets);
+    targets.forEach(function (tg) {
+      var hit = hits.indexOf(tg) >= 0;
+      tg.els.forEach(function (e) { e.classList.toggle('hit', hit); if (tg.kind !== 'lab') e.classList.toggle('dim', !hit); });
+      if (hit && tg.item) {
+        var i = +tg.item.getAttribute('data-i');
+        openRoles[i] = true;
+        tg.item.classList.add('open');
+        $('.t-head', tg.item).setAttribute('aria-expanded', 'true');
+      }
+    });
+    el.classList.add('active'); el.setAttribute('aria-pressed', 'true');
+    toolHint('<strong>' + esc(tag) + '</strong> · ' + esc(t('tool.in')) + ': ' + hits.map(function (h) { return esc(h.name); }).join(' · ') +
+      ' <button class="tool-clear" type="button">' + esc(t('tool.clear')) + '</button>');
+    if (hits.length) setTimeout(function () { hits[0].els[0].scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); }, 120);
+  }
+  $('#stack-grid').addEventListener('click', function (e) {
+    var el = e.target.closest('.tag-btn'); if (el) pickTool(el);
+  });
+  $('#stack-grid').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var el = e.target.closest('.tag-btn'); if (!el) return;
+    e.preventDefault(); pickTool(el);
+  });
+  $('#tool-hint').addEventListener('click', function (e) { if (e.target.closest('.tool-clear')) clearTool(); });
+
+  /* ---------------- Play a project's request path ---------------- */
+  var flowTimers = [];
+  $('#projects-list').addEventListener('click', function (e) {
+    var btn = e.target.closest('.flow-play');
+    if (!btn || btn.disabled) return;
+    var art = btn.closest('.proj'), p = S.projects[+art.getAttribute('data-p')];
+    var nodes = $$('.pf-node', art), links = $$('.pf-link', art), cap = $('.flow-cap', art), steps = p.steps || [];
+    flowTimers.forEach(clearTimeout); flowTimers = [];
+    nodes.forEach(function (n) { n.classList.remove('on', 'done'); });
+    links.forEach(function (l) { l.classList.remove('go'); });
+    if (reduceMotion) {
+      nodes.forEach(function (n) { n.classList.add('done'); });
+      links.forEach(function (l) { l.classList.add('go'); });
+      cap.textContent = steps.map(function (s, i) { return (i + 1) + '. ' + L(s); }).join(' ');
+      return;
+    }
+    var hop = 1300, travel = 450;
+    btn.disabled = true;
+    function at(ms, fn) { flowTimers.push(setTimeout(fn, ms)); }
+    nodes.forEach(function (n, i) {
+      var t0 = i * hop;
+      if (i > 0) at(t0 - travel, function () { links[i - 1].classList.add('go'); });
+      at(t0, function () {
+        if (i > 0) { nodes[i - 1].classList.remove('on'); nodes[i - 1].classList.add('done'); }
+        n.classList.add('on');
+        cap.textContent = steps[i] ? L(steps[i]) : '';
+        cap.classList.remove('swap'); void cap.offsetWidth; cap.classList.add('swap');
+      });
+    });
+    at((nodes.length - 1) * hop + 1600, function () {
+      nodes[nodes.length - 1].classList.remove('on'); nodes[nodes.length - 1].classList.add('done');
+      btn.disabled = false; btn.textContent = t('proj.replay');
     });
   });
 
