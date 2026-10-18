@@ -45,7 +45,7 @@
     }).join('');
   }
 
-  var openRoles = { 0: false, 1: true, 2: true };
+  var openRoles = { 2: true };
   function renderTimeline() {
     var chevron = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
     $('#timeline').innerHTML = S.experience.map(function (r, i) {
@@ -104,7 +104,7 @@
     var gh = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.29-1.69-1.29-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>';
     $('#projects-list').innerHTML = (S.projects || []).map(function (p) {
       var flow = p.flow.map(function (f, i) {
-        return (i ? '<span class="pf-arrow" aria-hidden="true">→</span>' : '') + '<span class="pf-node">' + esc(f) + '</span>';
+        return (i ? '<span class="pf-link" aria-hidden="true"></span>' : '') + '<span class="pf-node">' + esc(f) + '</span>';
       }).join('');
       return '<article class="proj glass reveal">' +
         '<header class="proj-head"><div><h3 class="proj-title">' + esc(L(p.title)) + '</h3><p class="proj-tag">' + esc(L(p.tagline)) + '</p></div>' +
@@ -149,6 +149,31 @@
   }
   $('#theme-btn').addEventListener('click', function () { setTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light'); });
   $('#lang-btn').addEventListener('click', function () { setLang(lang() === 'el' ? 'en' : 'el'); });
+
+  /* ---------------- Copy email ---------------- */
+  var copyBtn = $('#copy-mail'), copyTimer = null;
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      ta.remove();
+      ok ? resolve() : reject();
+    });
+  }
+  copyBtn.addEventListener('click', function () {
+    var label = $('#copy-mail-label');
+    copyText(copyBtn.getAttribute('data-email')).then(function () {
+      label.textContent = t('contact.copied');
+      clearTimeout(copyTimer);
+      copyTimer = setTimeout(function () { label.textContent = t('contact.copy'); }, 1800);
+    }, function () {
+      window.location.href = 'mailto:' + copyBtn.getAttribute('data-email');
+    });
+  });
 
   /* ---------------- Nav ---------------- */
   var nav = $('.nav'), menuBtn = $('#menu-btn'), links = $('#nav-links');
