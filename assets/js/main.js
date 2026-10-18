@@ -107,15 +107,18 @@
 
   function renderProjects() {
     var gh = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.29-1.69-1.29-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>';
-    $('#projects-list').innerHTML = (S.projects || []).map(function (p) {
+    flowTimers.forEach(clearTimeout); flowTimers = [];
+    $('#projects-list').innerHTML = (S.projects || []).map(function (p, pi) {
       var flow = p.flow.map(function (f, i) {
         return (i ? '<span class="pf-link" aria-hidden="true"></span>' : '') + '<span class="pf-node">' + esc(f) + '</span>';
       }).join('');
-      return '<article class="proj glass reveal">' +
+      return '<article class="proj glass reveal" data-p="' + pi + '">' +
         '<header class="proj-head"><div><h3 class="proj-title">' + esc(L(p.title)) + '</h3><p class="proj-tag">' + esc(L(p.tagline)) + '</p></div>' +
         '<div class="proj-meta"><span class="badge ok proj-live">' + esc(L(p.status)) + '</span><span class="t-period">' + esc(p.period) + '</span></div></header>' +
         '<p class="proj-desc">' + esc(L(p.desc)) + '</p>' +
         '<h4 class="mini-head">' + esc(t(p.flowKey || 'proj.flow')) + '</h4><div class="proj-flow">' + flow + '</div>' +
+        (p.steps ? '<div class="flow-bar"><button class="flow-play" type="button">' + esc(t('proj.play')) + '</button>' +
+          '<p class="flow-cap" aria-live="polite"></p></div>' : '') +
         '<div class="proj-grid"><div><h4 class="mini-head">' + esc(t('proj.stack')) + '</h4><div class="tags">' +
           p.tags.map(function (tg) { return '<span class="tag">' + esc(tg) + '</span>'; }).join('') + '</div></div>' +
         '<div><h4 class="mini-head">' + esc(t(p.learnedKey || 'proj.learned')) + '</h4><ul class="proj-lessons">' +
@@ -713,6 +716,41 @@
     g.addEventListener('click', fire);
     g.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); }
+    });
+  });
+
+  /* ---------------- Play a project's request path ---------------- */
+  var flowTimers = [];
+  $('#projects-list').addEventListener('click', function (e) {
+    var btn = e.target.closest('.flow-play');
+    if (!btn || btn.disabled) return;
+    var art = btn.closest('.proj'), p = S.projects[+art.getAttribute('data-p')];
+    var nodes = $$('.pf-node', art), links = $$('.pf-link', art), cap = $('.flow-cap', art), steps = p.steps || [];
+    flowTimers.forEach(clearTimeout); flowTimers = [];
+    nodes.forEach(function (n) { n.classList.remove('on', 'done'); });
+    links.forEach(function (l) { l.classList.remove('go'); });
+    if (reduceMotion) {
+      nodes.forEach(function (n) { n.classList.add('done'); });
+      links.forEach(function (l) { l.classList.add('go'); });
+      cap.textContent = steps.map(function (s, i) { return (i + 1) + '. ' + L(s); }).join(' ');
+      return;
+    }
+    var hop = 1300, travel = 450;
+    btn.disabled = true;
+    function at(ms, fn) { flowTimers.push(setTimeout(fn, ms)); }
+    nodes.forEach(function (n, i) {
+      var t0 = i * hop;
+      if (i > 0) at(t0 - travel, function () { links[i - 1].classList.add('go'); });
+      at(t0, function () {
+        if (i > 0) { nodes[i - 1].classList.remove('on'); nodes[i - 1].classList.add('done'); }
+        n.classList.add('on');
+        cap.textContent = steps[i] ? L(steps[i]) : '';
+        cap.classList.remove('swap'); void cap.offsetWidth; cap.classList.add('swap');
+      });
+    });
+    at((nodes.length - 1) * hop + 1600, function () {
+      nodes[nodes.length - 1].classList.remove('on'); nodes[nodes.length - 1].classList.add('done');
+      btn.disabled = false; btn.textContent = t('proj.replay');
     });
   });
 
