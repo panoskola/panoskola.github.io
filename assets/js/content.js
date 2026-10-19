@@ -30,6 +30,8 @@ window.SITE = {
       'iac.intro': 'Infrastructure as code for the analytics service that counts visits to this site. One terraform apply and one ansible-playbook turn an empty Oracle Cloud account into a hardened, monitored, backed-up HTTPS service. Every change after that goes through a CI/CD pipeline with a manual approval gate.',
       'iac.repo': 'View code on GitHub', 'iac.pipe': 'Pipeline', 'iac.arch': 'Architecture', 'iac.sec': 'Security & reliability decisions',
       'iac.broke': 'What broke, and what it taught me', 'iac.why': 'Why',
+      'iac.run': 'Run pipeline', 'iac.approve': 'Approve', 'iac.replay': 'Run again',
+      'iac.pipenote': 'Terraform is validated in CI but applied by hand, because the cloud credentials never leave my machine.',
       'proj.label': 'Built & running', 'proj.title': 'Projects',
       'proj.flow': 'Request path', 'proj.stack': 'Stack', 'proj.learned': 'What broke, and what it taught me',
       'proj.repo': 'View code & runbook on GitHub',
@@ -76,6 +78,8 @@ window.SITE = {
       'iac.intro': 'Υποδομή ως κώδικας για την υπηρεσία analytics που μετράει τις επισκέψεις σε αυτό το site. Ένα terraform apply και ένα ansible-playbook μετατρέπουν έναν άδειο λογαριασμό Oracle Cloud σε ασφαλισμένη, παρακολουθούμενη υπηρεσία HTTPS με backups. Κάθε αλλαγή μετά περνάει από pipeline CI/CD με χειροκίνητο gate έγκρισης.',
       'iac.repo': 'Ο κώδικας στο GitHub', 'iac.pipe': 'Pipeline', 'iac.arch': 'Αρχιτεκτονική', 'iac.sec': 'Αποφάσεις ασφάλειας & αξιοπιστίας',
       'iac.broke': 'Τι χάλασε και τι μου έμαθε', 'iac.why': 'Γιατί',
+      'iac.run': 'Τρέξε το pipeline', 'iac.approve': 'Έγκριση', 'iac.replay': 'Ξανά',
+      'iac.pipenote': 'Το Terraform ελέγχεται στο CI αλλά εφαρμόζεται χειροκίνητα, γιατί τα cloud credentials δεν φεύγουν ποτέ από το μηχάνημά μου.',
       'proj.label': 'Στημένα & σε λειτουργία', 'proj.title': 'Projects',
       'proj.flow': 'Διαδρομή αιτήματος', 'proj.stack': 'Τεχνολογίες', 'proj.learned': 'Τι χάλασε και τι μου έμαθε',
       'proj.repo': 'Κώδικας & runbook στο GitHub',
@@ -346,6 +350,25 @@ window.SITE = {
   },
 
   iac: {
+    pipeline: [
+      { node: 'git push', sub: 'maintainer → GitHub',
+        text: { en: 'The maintainer pushes to GitHub.', el: 'Ο maintainer κάνει push στο GitHub.' } },
+      { node: 'CI', sub: 'yamllint · ansible-lint · terraform validate',
+        text: { en: 'CI runs yamllint, ansible-lint (production profile), terraform fmt -check and terraform validate. No cloud credentials are needed.',
+                el: 'Το CI τρέχει yamllint, ansible-lint (production profile), terraform fmt -check και terraform validate. Δεν χρειάζονται cloud credentials.' } },
+      { node: 'Approval', sub: 'GitHub environment · required reviewer',
+        text: { en: 'The deploy job waits for a required reviewer. Secrets are released only after approval, and only on main.',
+                el: 'Το deploy job περιμένει υποχρεωτικό reviewer. Τα secrets ελευθερώνονται μόνο μετά την έγκριση και μόνο στο main.' } },
+      { node: 'ansible-playbook', sub: 'over SSH · dedicated deploy key',
+        text: { en: 'Approved: ansible-playbook runs over SSH with a dedicated deploy key, the same command a maintainer would run by hand.',
+                el: 'Εγκρίθηκε: το ansible-playbook τρέχει πάνω από SSH με ξεχωριστό deploy key, η ίδια εντολή που θα έτρεχα και χειροκίνητα.' } },
+      { node: 'VM', sub: 'Ubuntu 24.04 · A1 Flex arm64',
+        text: { en: 'The VM converges: SSH hardening, firewall, Docker stack, monitoring and backups.',
+                el: 'Το VM συγκλίνει: SSH hardening, firewall, Docker stack, monitoring και backups.' } },
+      { node: 'changed=0', sub: 'idempotent roles',
+        text: { en: 'Every role is idempotent, so a deploy of an unchanged repository reports changed=0.',
+                el: 'Κάθε role είναι idempotent, οπότε ένα deploy αμετάβλητου repository αναφέρει changed=0.' } }
+    ],
     security: [
       { title: { en: 'Secrets in Ansible Vault', el: 'Secrets στο Ansible Vault' },
         why: { en: 'Application secrets and the Discord webhook are AES256-encrypted in the repo. Terraform variables and state stay local and git-ignored; only an example file is committed.',

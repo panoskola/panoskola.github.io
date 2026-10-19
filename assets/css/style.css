@@ -447,6 +447,16 @@ html[lang="el"] h1, html[lang="el"] h2 { letter-spacing: -0.012em; }
 .sec-why b { color: var(--accent-2); }
 .sec-card[aria-expanded="true"] .sec-why { display: block; }
 .iac-repo { margin-top: 28px; }
+.pipe-link.lit { opacity: 1; }
+.pipe-node .t-node { transition: fill .3s, stroke .3s; }
+.pipe-node.on .t-node { fill: color-mix(in srgb, var(--accent) 24%, var(--surface-solid)); stroke-width: 2.5; }
+.pipe-node.done .t-node { stroke: var(--ok); }
+.pipe-node.waiting .t-node { stroke: var(--warn); fill: color-mix(in srgb, var(--warn) 14%, var(--surface-solid)); }
+.break-btn.pipe-btn { color: var(--accent); border-color: var(--border-hi); }
+.break-btn.pipe-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.break-btn.pipe-btn.is-approve { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 55%, transparent); }
+.break-btn.pipe-btn:disabled { opacity: .55; cursor: default; }
+@media print { #pipe-run, #pipe-cap { display: none; } }
 @media (max-width: 900px) { .iac-grid { grid-template-columns: 1fr; } }
 @media print { .iac-sec { grid-template-columns: 1fr 1fr; } .sec-why { display: block; } .sec-title::after { content: none; } }
 

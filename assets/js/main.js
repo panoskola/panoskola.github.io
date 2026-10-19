@@ -106,7 +106,64 @@
         '<span class="sec-why"><b>' + esc(t('iac.why')) + ':</b> ' + esc(L(c.why)) + '</span></button>';
     }).join('');
     $('#iac-incidents').innerHTML = S.iacIncidents.map(function (x) { return incidentHtml(x); }).join('');
+    renderPipeline();
   }
+
+  /* CI/CD pipeline diagram: runs to the approval gate, waits, then continues */
+  var pipeTimers = [], pipeIdx = -1, pipeState = 'idle';   // idle | running | waiting | done
+  var PIPE_Y = function (k) { return 8 + k * 54; };
+  function renderPipeline() {
+    var P = S.iac.pipeline, svg = '';
+    P.forEach(function (n, k) {
+      var y = PIPE_Y(k);
+      if (k) svg += '<path id="pipe-link-' + k + '" d="M280 ' + (y - 14) + ' V' + y + '" class="t-link pipe-link"/>' +
+        '<path id="pipe-ping-' + k + '" d="M280 ' + (y - 14) + ' V' + y + '" pathLength="100" class="t-ping"/>';
+      svg += '<g class="pipe-node" data-n="' + k + '"><rect x="110" y="' + y + '" width="340" height="40" rx="10" class="t-node"/>' +
+        '<text x="280" y="' + (y + 17) + '" class="t-name" text-anchor="middle">' + esc(n.node) + '</text>' +
+        '<text x="280" y="' + (y + 32) + '" class="t-sub" text-anchor="middle">' + esc(n.sub) + '</text></g>';
+    });
+    $('#pipe-body').innerHTML =
+      '<svg class="topo-svg" viewBox="0 0 560 326" role="img" aria-label="Pipeline: git push, CI, manual approval, ansible-playbook over SSH, VM, changed=0">' + svg + '</svg>' +
+      '<div class="break-bar"><button class="break-btn pipe-btn" id="pipe-run" type="button"></button>' +
+      '<p class="break-note" id="pipe-cap" aria-live="polite"></p></div>' +
+      '<p class="topo-hint">' + esc(t('iac.pipenote')) + '</p>';
+    paintPipeline();
+  }
+  function paintPipeline() {
+    var P = S.iac.pipeline, btn = $('#pipe-run');
+    $$('#pipe-body .pipe-node').forEach(function (g) {
+      var k = +g.getAttribute('data-n');
+      g.classList.toggle('done', k < pipeIdx || (pipeState === 'done' && k === pipeIdx));
+      g.classList.toggle('on', k === pipeIdx && pipeState !== 'done');
+      g.classList.toggle('waiting', k === 2 && pipeState === 'waiting');
+    });
+    $$('#pipe-body .pipe-link').forEach(function (l, i) { l.classList.toggle('lit', i + 1 <= pipeIdx); });
+    btn.disabled = pipeState === 'running';
+    btn.textContent = t(pipeState === 'waiting' ? 'iac.approve' : pipeState === 'done' ? 'iac.replay' : 'iac.run');
+    btn.classList.toggle('is-approve', pipeState === 'waiting');
+    $('#pipe-cap').textContent = pipeIdx < 0 ? '' :
+      (reduceMotion && pipeState === 'done' ? P.map(function (n, i) { return (i + 1) + '. ' + L(n.text); }).join(' ') : L(P[pipeIdx].text));
+  }
+  function pipeRun(from) {
+    pipeTimers.forEach(clearTimeout); pipeTimers = [];
+    if (reduceMotion) { pipeIdx = S.iac.pipeline.length - 1; pipeState = 'done'; paintPipeline(); return; }
+    var stop = from === 0 ? 2 : S.iac.pipeline.length - 1;
+    if (from === 0) pipeIdx = -1;
+    pipeState = 'running'; paintPipeline();
+    for (var k = from; k <= stop; k++) (function (k) {
+      pipeTimers.push(setTimeout(function () {
+        pipeIdx = k;
+        pipeState = k === stop ? (stop === 2 ? 'waiting' : 'done') : 'running';
+        var ping = $('#pipe-ping-' + k);
+        if (ping) { ping.classList.remove('go'); void ping.getBoundingClientRect(); ping.classList.add('go'); }
+        paintPipeline();
+      }, (k - from) * 1100));
+    })(k);
+  }
+  $('#iac-pipe').addEventListener('click', function (e) {
+    if (!e.target.closest('#pipe-run') || pipeState === 'running') return;
+    pipeRun(pipeState === 'waiting' ? 3 : 0);
+  });
   $('#iac-sec').addEventListener('click', function (e) {
     var card = e.target.closest('.sec-card');
     if (!card) return;
