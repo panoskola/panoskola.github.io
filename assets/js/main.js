@@ -107,7 +107,88 @@
     }).join('');
     $('#iac-incidents').innerHTML = S.iacIncidents.map(function (x) { return incidentHtml(x); }).join('');
     renderPipeline();
+    renderArch();
   }
+
+  /* Architecture diagram: alert drill (stop the node exporter) and the backup / restore paths */
+  var archDrill = false, archDisc = '', archNote = '', archBackupNext = 'nightly', archTimer = null;
+  function archBox(id, cls, x, y, w, h, name, sub) {
+    return '<g' + (id ? ' id="' + id + '"' : '') + ' class="' + cls + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="9" class="t-node"/>' +
+      '<text x="' + (x + w / 2) + '" y="' + (y + (sub ? 19 : 26)) + '" class="a-name" text-anchor="middle">' + name + '</text>' +
+      (sub ? '<text x="' + (x + w / 2) + '" y="' + (y + 34) + '" class="a-sub" text-anchor="middle" data-sub="' + id + '">' + sub + '</text>' : '') + '</g>';
+  }
+  function renderArch() {
+    var svg =
+      '<rect x="8" y="8" width="544" height="240" rx="16" class="t-host"/>' +
+      '<text x="26" y="30" class="t-cap">ORACLE CLOUD · FRANKFURT</text>' +
+      '<rect x="24" y="44" width="346" height="190" rx="12" class="t-switch"/>' +
+      '<text x="358" y="224" class="t-cap" text-anchor="end">VM · Ubuntu 24.04 · A1 Flex arm64</text>' +
+      '<path d="M148 96 H132" class="t-link"/><path d="M244 96 H260" class="t-link arch-scrape"/>' +
+      '<path d="M132 162 H148" class="t-link"/><path d="M244 162 H260" class="t-link"/>' +
+      '<path id="arch-alertpath" d="M84 74 V56 H466 V74" class="t-link arch-alertlink"/>' +
+      '<path id="arch-alertping" d="M84 74 V56 H466 V74" pathLength="100" class="t-ping"/>' +
+      '<path d="M84 268 V184" class="t-link"/><path d="M84 268 V184" class="t-packet"/>' +
+      '<path d="M356 172 H392" class="t-link"/>' +
+      '<path id="arch-backup" d="M356 172 H392" pathLength="100" class="t-ping"/>' +
+      '<path id="arch-restore" d="M392 182 H356" pathLength="100" class="t-ping"/>' +
+      archBox('', 'arch-n', 36, 74, 96, 44, 'Alertmanager') + archBox('', 'arch-n', 148, 74, 96, 44, 'Prometheus') +
+      archBox('arch-nodeexp', 'arch-n arch-exp', 260, 74, 96, 44, 'node_exporter') +
+      archBox('', 'arch-n', 36, 140, 96, 44, 'Caddy', 'HTTPS') + archBox('', 'arch-n', 148, 140, 96, 44, 'Umami') +
+      archBox('', 'arch-n', 260, 140, 96, 44, 'PostgreSQL', 'v16') +
+      archBox('arch-discord', 'arch-n arch-disc', 392, 74, 148, 44, 'Discord', 'alerts') +
+      '<g class="arch-alert"><rect x="392" y="126" width="148" height="26" rx="8" class="a-alertbox"/><text x="466" y="143" class="a-alert" text-anchor="middle">● TargetDown</text></g>' +
+      '<g id="arch-bucket" class="t-click arch-n" role="button" tabindex="0" aria-label="Object Storage: show the backup path">' +
+        '<rect x="392" y="162" width="148" height="68" rx="9" class="t-node"/>' +
+        '<text x="466" y="190" class="a-name" text-anchor="middle">Object Storage</text>' +
+        '<text x="466" y="206" class="a-sub" text-anchor="middle">backups · 30-day expiry</text>' +
+        '<text x="466" y="220" class="a-sub" text-anchor="middle">weekly restore test</text></g>' +
+      archBox('', 'arch-n', 24, 268, 120, 40, 'Visitor', 'HTTPS') ;
+    $('#arch-body').innerHTML =
+      '<svg class="topo-svg arch-svg" viewBox="0 0 560 326" role="img" aria-label="Architecture: a visitor reaches Caddy, Umami and PostgreSQL on an Oracle Cloud VM; Prometheus, Alertmanager and the node exporter alert to Discord; nightly backups go to Object Storage">' + svg + '</svg>' +
+      '<div class="break-bar"><button class="break-btn" id="drill-btn" type="button" aria-pressed="false"></button>' +
+      '<p class="break-note" id="drill-note" aria-live="polite"></p></div>' +
+      '<p class="topo-hint">' + esc(t('iac.arch.hint')) + '</p>';
+    paintArch();
+  }
+  function paintArch() {
+    var svg = $('.arch-svg'), btn = $('#drill-btn');
+    if (!svg || !btn) return;
+    svg.classList.toggle('alerting', archDrill);
+    btn.textContent = t(archDrill ? 'iac.drill.undo' : 'iac.drill');
+    btn.setAttribute('aria-pressed', archDrill ? 'true' : 'false');
+    var disc = $('[data-sub="arch-discord"]'), label = archDisc ? t('iac.drill.' + archDisc) : t('iac.alerts');
+    disc.textContent = label;
+    svg.classList.toggle('disc-firing', archDisc === 'firing');
+    svg.classList.toggle('disc-resolved', archDisc === 'resolved');
+    $('#drill-note').textContent = archNote ? t('iac.note.' + archNote) : '';
+  }
+  function archPlay(id) {
+    var el = $('#' + id);
+    if (!el || reduceMotion) return;
+    el.classList.remove('go'); void el.getBoundingClientRect(); el.classList.add('go');
+  }
+  $('#iac-arch').addEventListener('click', function (e) {
+    if (e.target.closest('#drill-btn')) {
+      archDrill = !archDrill;
+      clearTimeout(archTimer);
+      if (archDrill) { archDisc = 'firing'; archNote = 'drill'; archPlay('arch-alertping'); }
+      else {
+        archDisc = 'resolved'; archNote = 'resolved';
+        archTimer = setTimeout(function () { if (!archDrill) { archDisc = ''; archNote = ''; paintArch(); } }, 3500);
+      }
+      paintArch();
+    } else if (e.target.closest('#arch-bucket')) {
+      clearTimeout(archTimer);
+      archNote = archBackupNext;
+      archPlay(archBackupNext === 'nightly' ? 'arch-backup' : 'arch-restore');
+      archBackupNext = archBackupNext === 'nightly' ? 'restore' : 'nightly';
+      paintArch();
+    }
+  });
+  $('#iac-arch').addEventListener('keydown', function (e) {
+    var g = e.target.closest && e.target.closest('#arch-bucket');
+    if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+  });
 
   /* CI/CD pipeline diagram: runs to the approval gate, waits, then continues */
   var pipeTimers = [], pipeIdx = -1, pipeState = 'idle';   // idle | running | waiting | done
