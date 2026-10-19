@@ -320,36 +320,6 @@ window.SITE = {
       ]
     },
     {
-      title: { en: 'Infrastructure as Code for the Analytics Server', el: 'Infrastructure as Code για τον Analytics Server' },
-      tagline: { en: 'The analytics server above, rebuilt from code: provisioned, hardened, monitored, backed up and deployed through CI/CD',
-                 el: 'Ο analytics server παραπάνω, ξαναχτισμένος από κώδικα: provisioning, hardening, monitoring, backups και deploy μέσω CI/CD' },
-      period: '2026',
-      status: { en: 'Live', el: 'Σε λειτουργία' },
-      repo: 'https://github.com/panoskola/site-analytics-iac',
-      repoKey: 'proj.code', flowKey: 'proj.pipeline', learnedKey: 'proj.learned2',
-      desc: { en: 'Terraform creates the Oracle Cloud network, VM and backup bucket; Ansible roles configure the host (Docker, firewall, SSH hardening, fail2ban), deploy the application and run monitoring. Prometheus and Alertmanager send alerts to Discord. Nightly dumps go to Object Storage using the VM’s own identity, so no cloud credentials live on the server, and a weekly job restores the latest backup into a throwaway database to prove it works. Secrets are in Ansible Vault, and every push to main is linted and deployed only after a manual approval.',
-              el: 'Το Terraform δημιουργεί το δίκτυο, το VM και το backup bucket στο Oracle Cloud· οι ρόλοι του Ansible ρυθμίζουν το host (Docker, firewall, SSH hardening, fail2ban), κάνουν deploy την εφαρμογή και στήνουν το monitoring. Το Prometheus και το Alertmanager στέλνουν ειδοποιήσεις στο Discord. Τα νυχτερινά dumps ανεβαίνουν στο Object Storage με την ταυτότητα του ίδιου του VM, άρα δεν υπάρχουν cloud credentials στον server, και μια εβδομαδιαία εργασία επαναφέρει το τελευταίο backup σε προσωρινή βάση για να αποδείξει ότι δουλεύει. Τα secrets είναι σε Ansible Vault και κάθε push στο main περνά lint και γίνεται deploy μόνο μετά από χειροκίνητη έγκριση.' },
-      flow: ['git push', 'GitHub Actions · lint', 'Manual approval', 'ansible-playbook · SSH', 'Oracle Cloud VM'],
-      steps: [
-        { en: 'I push a change to GitHub.', el: 'Κάνω push μια αλλαγή στο GitHub.' },
-        { en: 'GitHub Actions runs yamllint, ansible-lint, terraform fmt and terraform validate.', el: 'Το GitHub Actions τρέχει yamllint, ansible-lint, terraform fmt και terraform validate.' },
-        { en: 'On main, the deploy job waits until I approve it in the production environment.', el: 'Στο main, το deploy job περιμένει μέχρι να το εγκρίνω στο environment production.' },
-        { en: 'After approval it runs ansible-playbook over SSH with a dedicated deploy key.', el: 'Μετά την έγκριση τρέχει ansible-playbook μέσω SSH με ξεχωριστό deploy key.' },
-        { en: 'The roles are idempotent, so an unchanged repository reports no changes on the server.', el: 'Οι ρόλοι είναι idempotent, οπότε ένα repo χωρίς αλλαγές δεν αλλάζει τίποτα στον server.' }
-      ],
-      tags: ['Terraform', 'Ansible', 'Ansible Vault', 'GitHub Actions', 'Oracle Cloud (OCI)', 'Prometheus', 'Alertmanager', 'Docker Compose', 'fail2ban', 'iptables'],
-      lessons: [
-        { en: 'SSH hardening was silently ignored: the cloud image’s own config file is read first and sshd keeps the first value it sees. I check the effective settings with sshd -T, not by reading files.',
-          el: 'Το SSH hardening αγνοούνταν σιωπηλά: το δικό του αρχείο του cloud image διαβάζεται πρώτο και το sshd κρατά την πρώτη τιμή που βλέπει. Ελέγχω τις πραγματικές ρυθμίσεις με sshd -T, όχι διαβάζοντας αρχεία.' },
-        { en: 'Ansible’s git module refused to update because a chmod on the server counted as a local change. The executable bit belongs in git.',
-          el: 'Το git module του Ansible αρνιόταν να ενημερώσει, γιατί ένα chmod στον server μετρούσε ως τοπική αλλαγή. Το executable bit ανήκει στο git.' },
-        { en: 'Every run reported a change because a health-check “Waiting” event counted as one. I wrote a changed_when that counts only real container changes, so the deploy report can be trusted.',
-          el: 'Κάθε run ανέφερε αλλαγή, γιατί ένα event «Waiting» του health check μετρούσε ως αλλαγή. Έγραψα changed_when που μετράει μόνο πραγματικές αλλαγές σε containers, ώστε η αναφορά του deploy να είναι αξιόπιστη.' },
-        { en: 'A backup that has never been restored is not a backup, so a weekly job restores it and reports to Discord.',
-          el: 'Ένα backup που δεν έχει επαναφερθεί ποτέ δεν είναι backup, γι’ αυτό μια εβδομαδιαία εργασία το επαναφέρει και αναφέρει στο Discord.' }
-      ]
-    },
-    {
       title: { en: 'World Cup Discord Bot', el: 'World Cup Discord Bot' },
       tagline: { en: 'Daily World Cup 2026 fixtures and results in a Discord server — built for fun',
                  el: 'Καθημερινά οι αγώνες και τα αποτελέσματα του Μουντιάλ 2026 σε Discord server — φτιαγμένο για πλάκα' },
@@ -392,6 +362,7 @@ window.SITE = {
   },
 
   iac: {
+    tags: ['Terraform', 'Ansible', 'Ansible Vault', 'GitHub Actions', 'Oracle Cloud (OCI)', 'Prometheus', 'Alertmanager', 'Docker Compose', 'fail2ban', 'iptables'],
     pipeline: [
       { node: 'git push', sub: 'maintainer → GitHub',
         text: { en: 'The maintainer pushes to GitHub.', el: 'Ο maintainer κάνει push στο GitHub.' } },

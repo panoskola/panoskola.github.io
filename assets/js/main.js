@@ -99,6 +99,7 @@
 
   var openSec = {};
   function renderIac() {
+    $('#iac-tags').innerHTML = S.iac.tags.map(function (tg) { return '<span class="tag">' + esc(tg) + '</span>'; }).join('');
     $('#iac-sec').innerHTML = S.iac.security.map(function (c, i) {
       var open = !!openSec[i];
       return '<button class="sec-card glass" type="button" data-i="' + i + '" aria-expanded="' + open + '">' +
