@@ -413,7 +413,7 @@ window.SITE = {
       body: { en: 'On cloud images the provider’s 60-cloudimg-settings.conf is read before my drop-in, and sshd uses the first value it sees.',
               el: 'Στα cloud images το 60-cloudimg-settings.conf του provider διαβάζεται πριν από το δικό μου drop-in, και ο sshd κρατά την πρώτη τιμή που βλέπει.' },
       lesson: { en: 'Naming the drop-in 01-hardening.conf fixed the order. Verify effective configuration with sshd -T, not by reading files.',
-                el: 'Το όνομα 01-hardening.conf διόρθωσε τη σειρά. Την ενεργή ρύθμιση τη ελέγχω με sshd -T, όχι διαβάζοντας αρχεία.' } },
+                el: 'Το όνομα 01-hardening.conf διόρθωσε τη σειρά. Την ενεργή ρύθμιση την ελέγχω με sshd -T, όχι διαβάζοντας αρχεία.' } },
     { cmd: 'git update-index --chmod=+x scripts/*.sh',
       title: { en: 'Ansible git module refused to update', el: 'Το git module του Ansible αρνιόταν να κάνει update' },
       body: { en: 'Making scripts executable on the server created local modifications, so the next pull failed.',

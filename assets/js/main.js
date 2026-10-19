@@ -144,7 +144,7 @@
         '<text x="466" y="220" class="a-sub" text-anchor="middle">weekly restore test</text></g>' +
       archBox('', 'arch-n', 24, 268, 120, 40, 'Visitor', 'HTTPS') ;
     $('#arch-body').innerHTML =
-      '<svg class="topo-svg arch-svg" viewBox="0 0 560 326" role="img" aria-label="Architecture: a visitor reaches Caddy, Umami and PostgreSQL on an Oracle Cloud VM; Prometheus, Alertmanager and the node exporter alert to Discord; nightly backups go to Object Storage">' + svg + '</svg>' +
+      '<div class="diagram-scroll"><svg class="topo-svg arch-svg" viewBox="0 0 560 326" role="img" aria-label="Architecture: a visitor reaches Caddy, Umami and PostgreSQL on an Oracle Cloud VM; Prometheus, Alertmanager and the node exporter alert to Discord; nightly backups go to Object Storage">' + svg + '</svg></div>' +
       '<div class="break-bar"><button class="break-btn" id="drill-btn" type="button" aria-pressed="false"></button>' +
       '<p class="break-note" id="drill-note" aria-live="polite"></p></div>' +
       '<p class="topo-hint">' + esc(t('iac.arch.hint')) + '</p>';
@@ -204,7 +204,7 @@
         '<text x="280" y="' + (y + 32) + '" class="t-sub" text-anchor="middle">' + esc(n.sub) + '</text></g>';
     });
     $('#pipe-body').innerHTML =
-      '<svg class="topo-svg" viewBox="0 0 560 326" role="img" aria-label="Pipeline: git push, CI, manual approval, ansible-playbook over SSH, VM, changed=0">' + svg + '</svg>' +
+      '<svg class="topo-svg" viewBox="90 0 380 326" role="img" aria-label="Pipeline: git push, CI, manual approval, ansible-playbook over SSH, VM, changed=0">' + svg + '</svg>' +
       '<div class="break-bar"><button class="break-btn pipe-btn" id="pipe-run" type="button"></button>' +
       '<p class="break-note" id="pipe-cap" aria-live="polite"></p></div>' +
       '<p class="topo-hint">' + esc(t('iac.pipenote')) + '</p>';

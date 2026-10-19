@@ -448,6 +448,9 @@ html[lang="el"] h1, html[lang="el"] h2 { letter-spacing: -0.012em; }
 .sec-card[aria-expanded="true"] .sec-why { display: block; }
 .iac-repo { margin-top: 28px; }
 .arch-svg text { font-family: var(--mono); }
+.iac-grid > * { min-width: 0; }
+.diagram-scroll { overflow-x: auto; margin: auto 0; }
+@media (max-width: 600px) { .diagram-scroll .arch-svg { min-width: 500px; } }
 /* the shared link gradient has no extent on straight horizontal/vertical paths, so use a solid stroke here */
 .arch-svg .t-link, .pipe-link { stroke: var(--accent); }
 .a-name { fill: var(--text); font-size: 10.5px; font-weight: 700; }
