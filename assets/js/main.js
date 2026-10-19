@@ -83,18 +83,37 @@
       return '<li class="' + (r.done ? 'is-done' : '') + '"><span class="st ' + (r.done ? 'done' : 'next') + '" title="' +
         esc(t(r.done ? 'lab.done' : 'lab.next')) + '">' + (r.done ? '✓' : '') + '</span><span>' + esc(L(r)) + '</span></li>';
     }).join('');
-    $('#incidents').innerHTML = S.incidents.map(function (x, i) {
-      var st = (S.incidentStates || [])[i];
-      var flip = st ?
-        '<div class="inc-state is-before" data-before="' + esc(L(st.before)) + '" data-after="' + esc(L(st.after)) + '">' +
-          '<span class="inc-badge">' + esc(t('lab.before')) + '</span><code>' + esc(L(st.before)) + '</code></div>' +
-        '<button class="inc-flip" type="button" aria-pressed="false">' + esc(t('lab.showfix')) + '</button>' : '';
-      return '<article class="incident glass">' +
-        '<code class="inc-cmd">' + esc(x.cmd) + '</code>' + flip +
-        '<h4>' + esc(L(x.title)) + '</h4><p>' + esc(L(x.body)) + '</p>' +
-        '<p class="inc-lesson"><b>' + esc(t('lab.lesson')) + '</b>' + esc(L(x.lesson)) + '</p></article>';
-    }).join('');
+    $('#incidents').innerHTML = S.incidents.map(function (x, i) { return incidentHtml(x, (S.incidentStates || [])[i]); }).join('');
   }
+
+  function incidentHtml(x, st) {
+    var flip = st ?
+      '<div class="inc-state is-before" data-before="' + esc(L(st.before)) + '" data-after="' + esc(L(st.after)) + '">' +
+        '<span class="inc-badge">' + esc(t('lab.before')) + '</span><code>' + esc(L(st.before)) + '</code></div>' +
+      '<button class="inc-flip" type="button" aria-pressed="false">' + esc(t('lab.showfix')) + '</button>' : '';
+    return '<article class="incident glass">' +
+      '<code class="inc-cmd">' + esc(x.cmd) + '</code>' + flip +
+      '<h4>' + esc(L(x.title)) + '</h4><p>' + esc(L(x.body)) + '</p>' +
+      '<p class="inc-lesson"><b>' + esc(t('lab.lesson')) + '</b>' + esc(L(x.lesson)) + '</p></article>';
+  }
+
+  var openSec = {};
+  function renderIac() {
+    $('#iac-sec').innerHTML = S.iac.security.map(function (c, i) {
+      var open = !!openSec[i];
+      return '<button class="sec-card glass" type="button" data-i="' + i + '" aria-expanded="' + open + '">' +
+        '<span class="sec-title">' + esc(L(c.title)) + '</span>' +
+        '<span class="sec-why"><b>' + esc(t('iac.why')) + ':</b> ' + esc(L(c.why)) + '</span></button>';
+    }).join('');
+    $('#iac-incidents').innerHTML = S.iacIncidents.map(function (x) { return incidentHtml(x); }).join('');
+  }
+  $('#iac-sec').addEventListener('click', function (e) {
+    var card = e.target.closest('.sec-card');
+    if (!card) return;
+    var i = card.getAttribute('data-i'), open = card.getAttribute('aria-expanded') !== 'true';
+    openSec[i] = open;
+    card.setAttribute('aria-expanded', open);
+  });
 
   function renderCerts() {
     $('#cert-list').innerHTML = S.certs.map(function (c) {
@@ -134,6 +153,7 @@
     renderStack();
     renderTimeline();
     renderLab();
+    renderIac();
     renderProjects();
     renderCerts();
     renderBreak();
