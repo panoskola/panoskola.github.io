@@ -296,7 +296,6 @@ window.SITE = {
       period: '2026',
       status: { en: 'Live', el: 'Σε λειτουργία' },
       repo: 'https://github.com/panoskola/site-analytics',
-      repo2: { url: 'https://github.com/panoskola/site-analytics-iac', label: { en: 'Infrastructure as code (Terraform + Ansible)', el: 'Υποδομή ως κώδικας (Terraform + Ansible)' } },
       desc: { en: 'Umami analytics on an Oracle Cloud Always Free VM (Ubuntu 24.04, Ampere ARM). Docker Compose runs Caddy, Umami and PostgreSQL; Caddy obtains and renews the Let’s Encrypt certificate on its own. Only ports 22, 80 and 443 are open, the database stays on the internal Docker network, and a nightly pg_dump keeps 14 days of backups. Cookieless, so the site needs no consent banner.',
               el: 'Umami analytics σε Oracle Cloud Always Free VM (Ubuntu 24.04, Ampere ARM). Το Docker Compose τρέχει Caddy, Umami και PostgreSQL· ο Caddy εκδίδει και ανανεώνει μόνος του το πιστοποιητικό Let’s Encrypt. Ανοιχτές είναι μόνο οι θύρες 22, 80 και 443, η βάση μένει στο εσωτερικό δίκτυο του Docker και ένα νυχτερινό pg_dump κρατάει backups 14 ημερών. Χωρίς cookies, οπότε το site δεν χρειάζεται banner συναίνεσης.' },
       flow: ['panoskola.github.io', 'script.js', 'DuckDNS', 'Caddy · HTTPS', 'Umami', 'PostgreSQL'],

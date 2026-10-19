@@ -280,9 +280,8 @@
           p.tags.map(function (tg) { return '<span class="tag">' + esc(tg) + '</span>'; }).join('') + '</div></div>' +
         '<div><h4 class="mini-head">' + esc(t(p.learnedKey || 'proj.learned')) + '</h4><ul class="proj-lessons">' +
           p.lessons.map(function (l) { return '<li>' + esc(L(l)) + '</li>'; }).join('') + '</ul></div></div>' +
-        '<div class="proj-links"><a class="btn btn-ghost btn-sm" href="' + esc(p.repo) + '" target="_blank" rel="noopener">' + gh + '<span>' + esc(t(p.repoKey || 'proj.repo')) + '</span></a>' +
-        (p.repo2 ? '<a class="btn btn-ghost btn-sm" href="' + esc(p.repo2.url) + '" target="_blank" rel="noopener">' + gh + '<span>' + esc(L(p.repo2.label)) + '</span></a>' : '') +
-        '</div></article>';
+        '<a class="btn btn-ghost btn-sm" href="' + esc(p.repo) + '" target="_blank" rel="noopener">' + gh + '<span>' + esc(t(p.repoKey || 'proj.repo')) + '</span></a>' +
+        '</article>';
     }).join('');
   }
 

@@ -505,7 +505,6 @@ html[lang="el"] h1, html[lang="el"] h2 { letter-spacing: -0.012em; }
 .proj-lessons li { position: relative; padding-left: 22px; margin-bottom: 9px; color: var(--text-soft); font-size: .93rem; }
 .proj-lessons li::before { content: "▹"; position: absolute; left: 2px; color: var(--accent-2); font-weight: 700; }
 .proj .btn { align-self: flex-start; }
-.proj-links { display: flex; flex-wrap: wrap; gap: 10px; }
 @media (max-width: 860px) {
   .proj-grid { grid-template-columns: 1fr; }
   .proj-flow { flex-direction: column; align-items: flex-start; gap: 0; padding-left: 14px; }
