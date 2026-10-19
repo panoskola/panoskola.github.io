@@ -83,18 +83,174 @@
       return '<li class="' + (r.done ? 'is-done' : '') + '"><span class="st ' + (r.done ? 'done' : 'next') + '" title="' +
         esc(t(r.done ? 'lab.done' : 'lab.next')) + '">' + (r.done ? '✓' : '') + '</span><span>' + esc(L(r)) + '</span></li>';
     }).join('');
-    $('#incidents').innerHTML = S.incidents.map(function (x, i) {
-      var st = (S.incidentStates || [])[i];
-      var flip = st ?
-        '<div class="inc-state is-before" data-before="' + esc(L(st.before)) + '" data-after="' + esc(L(st.after)) + '">' +
-          '<span class="inc-badge">' + esc(t('lab.before')) + '</span><code>' + esc(L(st.before)) + '</code></div>' +
-        '<button class="inc-flip" type="button" aria-pressed="false">' + esc(t('lab.showfix')) + '</button>' : '';
-      return '<article class="incident glass">' +
-        '<code class="inc-cmd">' + esc(x.cmd) + '</code>' + flip +
-        '<h4>' + esc(L(x.title)) + '</h4><p>' + esc(L(x.body)) + '</p>' +
-        '<p class="inc-lesson"><b>' + esc(t('lab.lesson')) + '</b>' + esc(L(x.lesson)) + '</p></article>';
-    }).join('');
+    $('#incidents').innerHTML = S.incidents.map(function (x, i) { return incidentHtml(x, (S.incidentStates || [])[i]); }).join('');
   }
+
+  function incidentHtml(x, st) {
+    var flip = st ?
+      '<div class="inc-state is-before" data-before="' + esc(L(st.before)) + '" data-after="' + esc(L(st.after)) + '">' +
+        '<span class="inc-badge">' + esc(t('lab.before')) + '</span><code>' + esc(L(st.before)) + '</code></div>' +
+      '<button class="inc-flip" type="button" aria-pressed="false">' + esc(t('lab.showfix')) + '</button>' : '';
+    return '<article class="incident glass">' +
+      '<code class="inc-cmd">' + esc(x.cmd) + '</code>' + flip +
+      '<h4>' + esc(L(x.title)) + '</h4><p>' + esc(L(x.body)) + '</p>' +
+      '<p class="inc-lesson"><b>' + esc(t('lab.lesson')) + '</b>' + esc(L(x.lesson)) + '</p></article>';
+  }
+
+  var openSec = {};
+  function renderIac() {
+    $('#iac-sec').innerHTML = S.iac.security.map(function (c, i) {
+      var open = !!openSec[i];
+      return '<button class="sec-card glass" type="button" data-i="' + i + '" aria-expanded="' + open + '">' +
+        '<span class="sec-title">' + esc(L(c.title)) + '</span>' +
+        '<span class="sec-why"><b>' + esc(t('iac.why')) + ':</b> ' + esc(L(c.why)) + '</span></button>';
+    }).join('');
+    $('#iac-incidents').innerHTML = S.iacIncidents.map(function (x) { return incidentHtml(x); }).join('');
+    renderPipeline();
+    renderArch();
+  }
+
+  /* Architecture diagram: alert drill (stop the node exporter) and the backup / restore paths */
+  var archDrill = false, archDisc = '', archNote = '', archBackupNext = 'nightly', archTimer = null;
+  function archBox(id, cls, x, y, w, h, name, sub) {
+    return '<g' + (id ? ' id="' + id + '"' : '') + ' class="' + cls + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="9" class="t-node"/>' +
+      '<text x="' + (x + w / 2) + '" y="' + (y + (sub ? 19 : 26)) + '" class="a-name" text-anchor="middle">' + name + '</text>' +
+      (sub ? '<text x="' + (x + w / 2) + '" y="' + (y + 34) + '" class="a-sub" text-anchor="middle" data-sub="' + id + '">' + sub + '</text>' : '') + '</g>';
+  }
+  function renderArch() {
+    var svg =
+      '<rect x="8" y="8" width="544" height="240" rx="16" class="t-host"/>' +
+      '<text x="26" y="30" class="t-cap">ORACLE CLOUD · FRANKFURT</text>' +
+      '<rect x="24" y="44" width="346" height="190" rx="12" class="t-switch"/>' +
+      '<text x="358" y="224" class="t-cap" text-anchor="end">VM · Ubuntu 24.04 · A1 Flex arm64</text>' +
+      '<path d="M148 96 H132" class="t-link"/><path d="M244 96 H260" class="t-link arch-scrape"/>' +
+      '<path d="M132 162 H148" class="t-link"/><path d="M244 162 H260" class="t-link"/>' +
+      '<path id="arch-alertpath" d="M84 74 V56 H466 V74" class="t-link arch-alertlink"/>' +
+      '<path id="arch-alertping" d="M84 74 V56 H466 V74" pathLength="100" class="t-ping"/>' +
+      '<path d="M84 268 V184" class="t-link"/><path d="M84 268 V184" class="t-packet"/>' +
+      '<path d="M356 172 H392" class="t-link"/>' +
+      '<path id="arch-backup" d="M356 172 H392" pathLength="100" class="t-ping"/>' +
+      '<path id="arch-restore" d="M392 182 H356" pathLength="100" class="t-ping"/>' +
+      archBox('', 'arch-n', 36, 74, 96, 44, 'Alertmanager') + archBox('', 'arch-n', 148, 74, 96, 44, 'Prometheus') +
+      archBox('arch-nodeexp', 'arch-n arch-exp', 260, 74, 96, 44, 'node_exporter') +
+      archBox('', 'arch-n', 36, 140, 96, 44, 'Caddy', 'HTTPS') + archBox('', 'arch-n', 148, 140, 96, 44, 'Umami') +
+      archBox('', 'arch-n', 260, 140, 96, 44, 'PostgreSQL', 'v16') +
+      archBox('arch-discord', 'arch-n arch-disc', 392, 74, 148, 44, 'Discord', 'alerts') +
+      '<g class="arch-alert"><rect x="392" y="126" width="148" height="26" rx="8" class="a-alertbox"/><text x="466" y="143" class="a-alert" text-anchor="middle">● TargetDown</text></g>' +
+      '<g id="arch-bucket" class="t-click arch-n" role="button" tabindex="0" aria-label="Object Storage: show the backup path">' +
+        '<rect x="392" y="162" width="148" height="68" rx="9" class="t-node"/>' +
+        '<text x="466" y="190" class="a-name" text-anchor="middle">Object Storage</text>' +
+        '<text x="466" y="206" class="a-sub" text-anchor="middle">backups · 30-day expiry</text>' +
+        '<text x="466" y="220" class="a-sub" text-anchor="middle">weekly restore test</text></g>' +
+      archBox('', 'arch-n', 24, 268, 120, 40, 'Visitor', 'HTTPS') ;
+    $('#arch-body').innerHTML =
+      '<div class="diagram-scroll"><svg class="topo-svg arch-svg" viewBox="0 0 560 326" role="img" aria-label="Architecture: a visitor reaches Caddy, Umami and PostgreSQL on an Oracle Cloud VM; Prometheus, Alertmanager and the node exporter alert to Discord; nightly backups go to Object Storage">' + svg + '</svg></div>' +
+      '<div class="break-bar"><button class="break-btn" id="drill-btn" type="button" aria-pressed="false"></button>' +
+      '<p class="break-note" id="drill-note" aria-live="polite"></p></div>' +
+      '<p class="topo-hint">' + esc(t('iac.arch.hint')) + '</p>';
+    paintArch();
+  }
+  function paintArch() {
+    var svg = $('.arch-svg'), btn = $('#drill-btn');
+    if (!svg || !btn) return;
+    svg.classList.toggle('alerting', archDrill);
+    btn.textContent = t(archDrill ? 'iac.drill.undo' : 'iac.drill');
+    btn.setAttribute('aria-pressed', archDrill ? 'true' : 'false');
+    var disc = $('[data-sub="arch-discord"]'), label = archDisc ? t('iac.drill.' + archDisc) : t('iac.alerts');
+    disc.textContent = label;
+    svg.classList.toggle('disc-firing', archDisc === 'firing');
+    svg.classList.toggle('disc-resolved', archDisc === 'resolved');
+    $('#drill-note').textContent = archNote ? t('iac.note.' + archNote) : '';
+  }
+  function archPlay(id) {
+    var el = $('#' + id);
+    if (!el || reduceMotion) return;
+    el.classList.remove('go'); void el.getBoundingClientRect(); el.classList.add('go');
+  }
+  $('#iac-arch').addEventListener('click', function (e) {
+    if (e.target.closest('#drill-btn')) {
+      archDrill = !archDrill;
+      clearTimeout(archTimer);
+      if (archDrill) { archDisc = 'firing'; archNote = 'drill'; archPlay('arch-alertping'); }
+      else {
+        archDisc = 'resolved'; archNote = 'resolved';
+        archTimer = setTimeout(function () { if (!archDrill) { archDisc = ''; if (archNote === 'resolved') archNote = ''; paintArch(); } }, 3500);
+      }
+      paintArch();
+    } else if (e.target.closest('#arch-bucket')) {
+      archNote = archBackupNext;
+      archPlay(archBackupNext === 'nightly' ? 'arch-backup' : 'arch-restore');
+      archBackupNext = archBackupNext === 'nightly' ? 'restore' : 'nightly';
+      paintArch();
+    }
+  });
+  $('#iac-arch').addEventListener('keydown', function (e) {
+    var g = e.target.closest && e.target.closest('#arch-bucket');
+    if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+  });
+
+  /* CI/CD pipeline diagram: runs to the approval gate, waits, then continues */
+  var pipeTimers = [], pipeIdx = -1, pipeState = 'idle';   // idle | running | waiting | done
+  var PIPE_Y = function (k) { return 8 + k * 54; };
+  function renderPipeline() {
+    var P = S.iac.pipeline, svg = '';
+    P.forEach(function (n, k) {
+      var y = PIPE_Y(k);
+      if (k) svg += '<path id="pipe-link-' + k + '" d="M280 ' + (y - 14) + ' V' + y + '" class="t-link pipe-link"/>' +
+        '<path id="pipe-ping-' + k + '" d="M280 ' + (y - 14) + ' V' + y + '" pathLength="100" class="t-ping"/>';
+      svg += '<g class="pipe-node" data-n="' + k + '"><rect x="110" y="' + y + '" width="340" height="40" rx="10" class="t-node"/>' +
+        '<text x="280" y="' + (y + 17) + '" class="t-name" text-anchor="middle">' + esc(n.node) + '</text>' +
+        '<text x="280" y="' + (y + 32) + '" class="t-sub" text-anchor="middle">' + esc(n.sub) + '</text></g>';
+    });
+    $('#pipe-body').innerHTML =
+      '<svg class="topo-svg" viewBox="90 0 380 326" role="img" aria-label="Pipeline: git push, CI, manual approval, ansible-playbook over SSH, VM, changed=0">' + svg + '</svg>' +
+      '<div class="break-bar"><button class="break-btn pipe-btn" id="pipe-run" type="button"></button>' +
+      '<p class="break-note" id="pipe-cap" aria-live="polite"></p></div>' +
+      '<p class="topo-hint">' + esc(t('iac.pipenote')) + '</p>';
+    paintPipeline();
+  }
+  function paintPipeline() {
+    var P = S.iac.pipeline, btn = $('#pipe-run');
+    $$('#pipe-body .pipe-node').forEach(function (g) {
+      var k = +g.getAttribute('data-n');
+      g.classList.toggle('done', k < pipeIdx || (pipeState === 'done' && k === pipeIdx));
+      g.classList.toggle('on', k === pipeIdx && pipeState !== 'done');
+      g.classList.toggle('waiting', k === 2 && pipeState === 'waiting');
+    });
+    $$('#pipe-body .pipe-link').forEach(function (l, i) { l.classList.toggle('lit', i + 1 <= pipeIdx); });
+    btn.setAttribute('aria-disabled', pipeState === 'running' ? 'true' : 'false');   // not :disabled, so keyboard focus stays on the button
+    btn.textContent = t(pipeState === 'waiting' ? 'iac.approve' : pipeState === 'done' ? 'iac.replay' : 'iac.run');
+    btn.classList.toggle('is-approve', pipeState === 'waiting');
+    $('#pipe-cap').textContent = pipeIdx < 0 ? '' :
+      (reduceMotion && pipeState === 'done' ? P.map(function (n, i) { return (i + 1) + '. ' + L(n.text); }).join(' ') : L(P[pipeIdx].text));
+  }
+  function pipeRun(from) {
+    pipeTimers.forEach(clearTimeout); pipeTimers = [];
+    if (reduceMotion) { pipeIdx = S.iac.pipeline.length - 1; pipeState = 'done'; paintPipeline(); return; }
+    var stop = from === 0 ? 2 : S.iac.pipeline.length - 1;
+    if (from === 0) pipeIdx = -1;
+    pipeState = 'running'; paintPipeline();
+    for (var k = from; k <= stop; k++) (function (k) {
+      pipeTimers.push(setTimeout(function () {
+        pipeIdx = k;
+        pipeState = k === stop ? (stop === 2 ? 'waiting' : 'done') : 'running';
+        var ping = $('#pipe-ping-' + k);
+        if (ping) { ping.classList.remove('go'); void ping.getBoundingClientRect(); ping.classList.add('go'); }
+        paintPipeline();
+      }, (k - from) * 1100));
+    })(k);
+  }
+  $('#iac-pipe').addEventListener('click', function (e) {
+    if (!e.target.closest('#pipe-run') || pipeState === 'running') return;
+    pipeRun(pipeState === 'waiting' ? 3 : 0);
+  });
+  $('#iac-sec').addEventListener('click', function (e) {
+    var card = e.target.closest('.sec-card');
+    if (!card) return;
+    var i = card.getAttribute('data-i'), open = card.getAttribute('aria-expanded') !== 'true';
+    openSec[i] = open;
+    card.setAttribute('aria-expanded', open);
+  });
 
   function renderCerts() {
     $('#cert-list').innerHTML = S.certs.map(function (c) {
@@ -124,8 +280,9 @@
           p.tags.map(function (tg) { return '<span class="tag">' + esc(tg) + '</span>'; }).join('') + '</div></div>' +
         '<div><h4 class="mini-head">' + esc(t(p.learnedKey || 'proj.learned')) + '</h4><ul class="proj-lessons">' +
           p.lessons.map(function (l) { return '<li>' + esc(L(l)) + '</li>'; }).join('') + '</ul></div></div>' +
-        '<a class="btn btn-ghost btn-sm" href="' + esc(p.repo) + '" target="_blank" rel="noopener">' + gh + '<span>' + esc(t(p.repoKey || 'proj.repo')) + '</span></a>' +
-        '</article>';
+        '<div class="proj-links"><a class="btn btn-ghost btn-sm" href="' + esc(p.repo) + '" target="_blank" rel="noopener">' + gh + '<span>' + esc(t(p.repoKey || 'proj.repo')) + '</span></a>' +
+        (p.repo2 ? '<a class="btn btn-ghost btn-sm" href="' + esc(p.repo2.url) + '" target="_blank" rel="noopener">' + gh + '<span>' + esc(L(p.repo2.label)) + '</span></a>' : '') +
+        '</div></article>';
     }).join('');
   }
 
@@ -134,6 +291,7 @@
     renderStack();
     renderTimeline();
     renderLab();
+    renderIac();
     renderProjects();
     renderCerts();
     renderBreak();
@@ -537,8 +695,10 @@
 
   var CMDS = {
     help: { d: 'list commands', f: function () {
-      var rows = Object.keys(CMDS).filter(function (k) { return !CMDS[k].hidden; }).map(function (k) {
-        return C('c-ok', (k + '            ').slice(0, 12)) + C('c-dim', CMDS[k].d);
+      var keys = Object.keys(CMDS).filter(function (k) { return !CMDS[k].hidden; });
+      var w = Math.max.apply(null, keys.map(function (k) { return k.length; })) + 2;
+      var rows = keys.map(function (k) {
+        return C('c-ok', (k + new Array(w + 1).join(' ')).slice(0, w)) + C('c-dim', CMDS[k].d);
       });
       return sectionList('Available commands', rows);
     } },
@@ -567,6 +727,28 @@
         '  GW        192.168.10.1   ' + C('c-warn', 'intentionally absent') + '\n' +
         C('c-dim', 'Try: ping dc01 · ping 192.168.10.1 · ipconfig · nslookup lab.local');
     } },
+    iac: { d: 'infrastructure as code project', f: function () {
+      return C('c-acc', 'site-analytics-iac') + C('c-dim', '  (Terraform · Ansible · GitHub Actions · Oracle Cloud Always Free)') + '\n' +
+        '  git push → CI → approval → ansible-playbook → VM\n' +
+        '  Prometheus + Alertmanager → Discord · nightly pg_dump → Object Storage · weekly restore test\n' +
+        '  <a href="https://github.com/panoskola/site-analytics-iac" target="_blank" rel="noopener">github.com/panoskola/site-analytics-iac</a>\n' +
+        C('c-dim', 'Try: terraform plan · ansible-playbook · goto iac');
+    } },
+    terraform: { d: 'terraform plan (simulated)', f: function (args) {
+      if ((args[0] || '').toLowerCase() !== 'plan') return C('c-bad', 'usage: terraform plan');
+      var res = ['oci_core_vcn.main', 'oci_core_internet_gateway.main', 'oci_core_route_table.public', 'oci_core_security_list.web', 'oci_core_subnet.public',
+                 'oci_core_instance.web', 'oci_objectstorage_bucket.backups', 'oci_objectstorage_object_lifecycle_policy.backups_expiry',
+                 'oci_identity_dynamic_group.web', 'oci_identity_policy.web_backups', 'oci_identity_policy.object_storage_service'];
+      return { delay: 140, seq: [C('c-dim', '# what a fresh apply on an empty account would create')].concat(
+        res.map(function (r) { return C('c-ok', '  + ') + r; }),
+        [' ', 'Plan: ' + res.length + ' to add, 0 to change, 0 to destroy.']) };
+    } },
+    'ansible-playbook': { d: 'run the site playbook (simulated)', f: function () {
+      var roles = ['base', 'docker', 'firewall', 'hardening', 'app', 'monitoring', 'backup'];
+      return { delay: 220, seq: [C('c-dim', '# a deploy of an unchanged repository on an already-converged host'), 'PLAY [web]'].concat(
+        roles.map(function (r) { return 'ROLE [' + r + ']' + C('c-ok', ' ok'); }),
+        [' ', 'PLAY RECAP', 'site-analytics : ' + C('c-ok', 'changed=0') + ' unreachable=0 failed=0', C('c-dim', '# idempotent roles: nothing changed, so nothing was touched')]) };
+    } },
     certs: { d: 'certifications & education', f: function () {
       return S.certs.map(function (c) { return (c.prep ? C('c-warn', '[prep]') : C('c-ok', '[ ok ]')) + ' ' + c.name; }).join('\n') +
         '\n' + C('c-dim', '[edu ]') + ' ' + L(S.education.name) + ' — ' + L(S.education.school);
@@ -582,9 +764,9 @@
       document.body.appendChild(a); a.click(); a.remove();
       return C('c-ok', 'Downloading Panayotis_Kola_CV.pdf …');
     } },
-    goto: { d: 'scroll to a section: about|stack|experience|lab|projects|certs|contact', f: function (args) {
+    goto: { d: 'scroll to a section: about|stack|experience|iac|lab|projects|certs|contact', f: function (args) {
       var id = (args[0] || '').toLowerCase();
-      if (['about', 'stack', 'experience', 'lab', 'projects', 'certs', 'contact'].indexOf(id) < 0) return C('c-bad', 'usage: goto about|stack|experience|lab|projects|certs|contact');
+      if (['about', 'stack', 'experience', 'iac', 'lab', 'projects', 'certs', 'contact'].indexOf(id) < 0) return C('c-bad', 'usage: goto about|stack|experience|iac|lab|projects|certs|contact');
       setTimeout(function () { go(id); }, 150); return C('c-dim', 'cd #' + id);
     } },
     ping: { d: 'ping a lab host', f: function (args) {
@@ -783,6 +965,8 @@
     $$('#projects-list .proj').forEach(function (a) {
       out.push({ kind: 'proj', els: [a], name: $('.proj-title', a).textContent, text: a.textContent.toLowerCase() });
     });
+    var iac = $('#iac');
+    if (iac) out.push({ kind: 'lab', els: $$('.topo', iac), name: t('nav.iac'), text: iac.textContent.toLowerCase() });
     var lab = $('#lab');
     if (lab) out.push({ kind: 'lab', els: $$('.topo, .roadmap', lab), name: t('nav.lab'), text: lab.textContent.toLowerCase() });
     return out;

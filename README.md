@@ -15,7 +15,9 @@ Static site for GitHub Pages. No build step: HTML, CSS and vanilla JavaScript.
 Press <kbd>`</kbd> on the site to open the terminal.
 
 Visitor statistics come from my self-hosted Umami instance — see
-[site-analytics](https://github.com/panoskola/site-analytics).
+[site-analytics](https://github.com/panoskola/site-analytics). The server behind it is
+provisioned and operated with Terraform and Ansible, shown in the interactive IaC section
+of the site — see [site-analytics-iac](https://github.com/panoskola/site-analytics-iac).
 
 ## Notes
 

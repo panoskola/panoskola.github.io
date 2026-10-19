@@ -434,6 +434,53 @@ html[lang="el"] h1, html[lang="el"] h2 { letter-spacing: -0.012em; }
 .inc-lesson b { font-size: .9rem; color: var(--accent-2); margin-right: 6px; }
 .inc-lesson b::after { content: ":"; }
 
+/* ---------- IaC ---------- */
+.iac-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
+#iac-incidents .inc-cmd::before { content: "$ "; }
+.iac-sec { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; align-items: start; }
+.sec-card { text-align: left; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; font: inherit; color: inherit; transition: border-color .3s; }
+.sec-card:hover, .sec-card:focus-visible { border-color: var(--border-hi); }
+.sec-title { font-weight: 700; font-size: 1rem; }
+.sec-title::after { content: "+"; float: right; color: var(--accent); font-family: var(--mono); }
+.sec-card[aria-expanded="true"] .sec-title::after { content: "−"; }
+.sec-why { display: none; font-size: .92rem; color: var(--text-soft); }
+.sec-why b { color: var(--accent-2); }
+.sec-card[aria-expanded="true"] .sec-why { display: block; }
+.iac-repo { margin-top: 28px; }
+.arch-svg text { font-family: var(--mono); }
+.iac-grid > * { min-width: 0; }
+.diagram-scroll { overflow-x: auto; margin: auto 0; }
+@media (max-width: 600px) { .diagram-scroll .arch-svg { min-width: 500px; } }
+/* the shared link gradient has no extent on straight horizontal/vertical paths, so use a solid stroke here */
+.arch-svg .t-link, .pipe-link { stroke: var(--accent); }
+.a-name { fill: var(--text); font-size: 10.5px; font-weight: 700; }
+.a-sub { fill: var(--text-soft); font-size: 9.5px; }
+.a-alertbox { fill: color-mix(in srgb, var(--bad) 14%, var(--surface-solid)); stroke: var(--bad); stroke-width: 1.3; }
+.a-alert { fill: var(--bad); font-size: 10.5px; font-weight: 700; }
+.arch-alert { display: none; }
+.arch-svg.alerting .arch-alert { display: block; }
+.arch-svg.alerting .arch-exp .t-node { stroke: var(--bad); fill: color-mix(in srgb, var(--bad) 12%, var(--surface-solid)); }
+.arch-svg.alerting .arch-scrape { stroke: var(--bad); stroke-dasharray: 3 3; opacity: .8; }
+.arch-svg.alerting .arch-alertlink { opacity: 1; }
+.arch-svg.disc-firing .arch-disc .t-node { stroke: var(--bad); }
+.arch-svg.disc-firing .arch-disc .a-sub { fill: var(--bad); font-weight: 700; }
+.arch-svg.disc-resolved .arch-disc .t-node { stroke: var(--ok); }
+.arch-svg.disc-resolved .arch-disc .a-sub { fill: var(--ok); font-weight: 700; }
+#arch-bucket { outline: none; }
+#arch-bucket:hover .t-node, #arch-bucket:focus-visible .t-node { fill: color-mix(in srgb, var(--accent) 20%, var(--surface-solid)); stroke-width: 2.5; }
+.pipe-link.lit { opacity: 1; }
+.pipe-node .t-node { transition: fill .3s, stroke .3s; }
+.pipe-node.on .t-node { fill: color-mix(in srgb, var(--accent) 24%, var(--surface-solid)); stroke-width: 2.5; }
+.pipe-node.done .t-node { stroke: var(--ok); }
+.pipe-node.waiting .t-node { stroke: var(--warn); fill: color-mix(in srgb, var(--warn) 14%, var(--surface-solid)); }
+.break-btn.pipe-btn { color: var(--accent); border-color: var(--border-hi); }
+.break-btn.pipe-btn:hover:not([aria-disabled="true"]) { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.break-btn.pipe-btn.is-approve { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 55%, transparent); }
+.break-btn.pipe-btn[aria-disabled="true"] { opacity: .55; cursor: default; }
+@media print { #pipe-run, #pipe-cap { display: none; } }
+@media (max-width: 900px) { .iac-grid { grid-template-columns: 1fr; } }
+@media print { .iac-sec { grid-template-columns: 1fr 1fr; } .sec-why { display: block; } .sec-title::after { content: none; } }
+
 /* ---------- Projects ---------- */
 #projects-list { display: grid; gap: 18px; }
 .proj { padding: 28px; display: flex; flex-direction: column; gap: 18px; }
@@ -458,6 +505,7 @@ html[lang="el"] h1, html[lang="el"] h2 { letter-spacing: -0.012em; }
 .proj-lessons li { position: relative; padding-left: 22px; margin-bottom: 9px; color: var(--text-soft); font-size: .93rem; }
 .proj-lessons li::before { content: "▹"; position: absolute; left: 2px; color: var(--accent-2); font-weight: 700; }
 .proj .btn { align-self: flex-start; }
+.proj-links { display: flex; flex-wrap: wrap; gap: 10px; }
 @media (max-width: 860px) {
   .proj-grid { grid-template-columns: 1fr; }
   .proj-flow { flex-direction: column; align-items: flex-start; gap: 0; padding-left: 14px; }
