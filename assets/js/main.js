@@ -174,11 +174,10 @@
       if (archDrill) { archDisc = 'firing'; archNote = 'drill'; archPlay('arch-alertping'); }
       else {
         archDisc = 'resolved'; archNote = 'resolved';
-        archTimer = setTimeout(function () { if (!archDrill) { archDisc = ''; archNote = ''; paintArch(); } }, 3500);
+        archTimer = setTimeout(function () { if (!archDrill) { archDisc = ''; if (archNote === 'resolved') archNote = ''; paintArch(); } }, 3500);
       }
       paintArch();
     } else if (e.target.closest('#arch-bucket')) {
-      clearTimeout(archTimer);
       archNote = archBackupNext;
       archPlay(archBackupNext === 'nightly' ? 'arch-backup' : 'arch-restore');
       archBackupNext = archBackupNext === 'nightly' ? 'restore' : 'nightly';
@@ -219,7 +218,7 @@
       g.classList.toggle('waiting', k === 2 && pipeState === 'waiting');
     });
     $$('#pipe-body .pipe-link').forEach(function (l, i) { l.classList.toggle('lit', i + 1 <= pipeIdx); });
-    btn.disabled = pipeState === 'running';
+    btn.setAttribute('aria-disabled', pipeState === 'running' ? 'true' : 'false');   // not :disabled, so keyboard focus stays on the button
     btn.textContent = t(pipeState === 'waiting' ? 'iac.approve' : pipeState === 'done' ? 'iac.replay' : 'iac.run');
     btn.classList.toggle('is-approve', pipeState === 'waiting');
     $('#pipe-cap').textContent = pipeIdx < 0 ? '' :

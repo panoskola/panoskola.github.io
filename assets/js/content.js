@@ -80,7 +80,7 @@ window.SITE = {
       'lab.before': 'Πριν', 'lab.after': 'Μετά τη διόρθωση', 'lab.showfix': 'Δες τη διόρθωση', 'lab.showprob': 'Δες το πρόβλημα',
       'lab.try': 'Πάτησε ένα μηχάνημα για να τρέξει μια εντολή στο terminal.', 'a11y.skip': 'Μετάβαση στο περιεχόμενο', 'footer.email': 'Email', 'footer.updated': 'Τελευταία ενημέρωση',
       'lab.done': 'Έγινε', 'lab.next': 'Επόμενο',
-      'nav.iac': 'IaC', 'iac.title': 'Infrastructure as Code: self-hosted analytics',
+      'nav.iac': 'IaC', 'iac.title': 'Υποδομή ως κώδικας: self-hosted analytics',
       'iac.intro': 'Υποδομή ως κώδικας για την υπηρεσία analytics που μετράει τις επισκέψεις σε αυτό το site. Ένα terraform apply και ένα ansible-playbook μετατρέπουν έναν άδειο λογαριασμό Oracle Cloud σε ασφαλισμένη, παρακολουθούμενη υπηρεσία HTTPS με backups. Κάθε αλλαγή μετά περνάει από pipeline CI/CD με χειροκίνητο gate έγκρισης.',
       'iac.repo': 'Ο κώδικας στο GitHub', 'iac.pipe': 'Pipeline', 'iac.arch': 'Αρχιτεκτονική', 'iac.sec': 'Αποφάσεις ασφάλειας & αξιοπιστίας',
       'iac.broke': 'Τι χάλασε και τι μου έμαθε', 'iac.why': 'Γιατί',

@@ -474,9 +474,9 @@ html[lang="el"] h1, html[lang="el"] h2 { letter-spacing: -0.012em; }
 .pipe-node.done .t-node { stroke: var(--ok); }
 .pipe-node.waiting .t-node { stroke: var(--warn); fill: color-mix(in srgb, var(--warn) 14%, var(--surface-solid)); }
 .break-btn.pipe-btn { color: var(--accent); border-color: var(--border-hi); }
-.break-btn.pipe-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.break-btn.pipe-btn:hover:not([aria-disabled="true"]) { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 .break-btn.pipe-btn.is-approve { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 55%, transparent); }
-.break-btn.pipe-btn:disabled { opacity: .55; cursor: default; }
+.break-btn.pipe-btn[aria-disabled="true"] { opacity: .55; cursor: default; }
 @media print { #pipe-run, #pipe-cap { display: none; } }
 @media (max-width: 900px) { .iac-grid { grid-template-columns: 1fr; } }
 @media print { .iac-sec { grid-template-columns: 1fr 1fr; } .sec-why { display: block; } .sec-title::after { content: none; } }
