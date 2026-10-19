@@ -281,8 +281,9 @@
           p.tags.map(function (tg) { return '<span class="tag">' + esc(tg) + '</span>'; }).join('') + '</div></div>' +
         '<div><h4 class="mini-head">' + esc(t(p.learnedKey || 'proj.learned')) + '</h4><ul class="proj-lessons">' +
           p.lessons.map(function (l) { return '<li>' + esc(L(l)) + '</li>'; }).join('') + '</ul></div></div>' +
-        '<a class="btn btn-ghost btn-sm" href="' + esc(p.repo) + '" target="_blank" rel="noopener">' + gh + '<span>' + esc(t(p.repoKey || 'proj.repo')) + '</span></a>' +
-        '</article>';
+        '<div class="proj-links"><a class="btn btn-ghost btn-sm" href="' + esc(p.repo) + '" target="_blank" rel="noopener">' + gh + '<span>' + esc(t(p.repoKey || 'proj.repo')) + '</span></a>' +
+        (p.repo2 ? '<a class="btn btn-ghost btn-sm" href="' + esc(p.repo2.url) + '" target="_blank" rel="noopener">' + gh + '<span>' + esc(L(p.repo2.label)) + '</span></a>' : '') +
+        '</div></article>';
     }).join('');
   }
 
@@ -695,8 +696,10 @@
 
   var CMDS = {
     help: { d: 'list commands', f: function () {
-      var rows = Object.keys(CMDS).filter(function (k) { return !CMDS[k].hidden; }).map(function (k) {
-        return C('c-ok', (k + '            ').slice(0, 12)) + C('c-dim', CMDS[k].d);
+      var keys = Object.keys(CMDS).filter(function (k) { return !CMDS[k].hidden; });
+      var w = Math.max.apply(null, keys.map(function (k) { return k.length; })) + 2;
+      var rows = keys.map(function (k) {
+        return C('c-ok', (k + new Array(w + 1).join(' ')).slice(0, w)) + C('c-dim', CMDS[k].d);
       });
       return sectionList('Available commands', rows);
     } },
@@ -725,6 +728,28 @@
         '  GW        192.168.10.1   ' + C('c-warn', 'intentionally absent') + '\n' +
         C('c-dim', 'Try: ping dc01 · ping 192.168.10.1 · ipconfig · nslookup lab.local');
     } },
+    iac: { d: 'infrastructure as code project', f: function () {
+      return C('c-acc', 'site-analytics-iac') + C('c-dim', '  (Terraform · Ansible · GitHub Actions · Oracle Cloud Always Free)') + '\n' +
+        '  git push → CI → approval → ansible-playbook → VM\n' +
+        '  Prometheus + Alertmanager → Discord · nightly pg_dump → Object Storage · weekly restore test\n' +
+        '  <a href="https://github.com/panoskola/site-analytics-iac" target="_blank" rel="noopener">github.com/panoskola/site-analytics-iac</a>\n' +
+        C('c-dim', 'Try: terraform plan · ansible-playbook · goto iac');
+    } },
+    terraform: { d: 'terraform plan (simulated)', f: function (args) {
+      if ((args[0] || '').toLowerCase() !== 'plan') return C('c-bad', 'usage: terraform plan');
+      var res = ['oci_core_vcn.main', 'oci_core_internet_gateway.main', 'oci_core_route_table.public', 'oci_core_security_list.web', 'oci_core_subnet.public',
+                 'oci_core_instance.web', 'oci_objectstorage_bucket.backups', 'oci_objectstorage_object_lifecycle_policy.backups_expiry',
+                 'oci_identity_dynamic_group.web', 'oci_identity_policy.web_backups', 'oci_identity_policy.object_storage_service'];
+      return { delay: 140, seq: [C('c-dim', '# what a fresh apply on an empty account would create')].concat(
+        res.map(function (r) { return C('c-ok', '  + ') + r; }),
+        [' ', 'Plan: ' + res.length + ' to add, 0 to change, 0 to destroy.']) };
+    } },
+    'ansible-playbook': { d: 'run the site playbook (simulated)', f: function () {
+      var roles = ['base', 'docker', 'firewall', 'hardening', 'app', 'monitoring', 'backup'];
+      return { delay: 220, seq: [C('c-dim', '# a deploy of an unchanged repository on an already-converged host'), 'PLAY [web]'].concat(
+        roles.map(function (r) { return 'ROLE [' + r + ']' + C('c-ok', ' ok'); }),
+        [' ', 'PLAY RECAP', 'site-analytics : ' + C('c-ok', 'changed=0') + ' unreachable=0 failed=0', C('c-dim', '# idempotent roles: nothing changed, so nothing was touched')]) };
+    } },
     certs: { d: 'certifications & education', f: function () {
       return S.certs.map(function (c) { return (c.prep ? C('c-warn', '[prep]') : C('c-ok', '[ ok ]')) + ' ' + c.name; }).join('\n') +
         '\n' + C('c-dim', '[edu ]') + ' ' + L(S.education.name) + ' — ' + L(S.education.school);
@@ -740,9 +765,9 @@
       document.body.appendChild(a); a.click(); a.remove();
       return C('c-ok', 'Downloading Panayotis_Kola_CV.pdf …');
     } },
-    goto: { d: 'scroll to a section: about|stack|experience|lab|projects|certs|contact', f: function (args) {
+    goto: { d: 'scroll to a section: about|stack|experience|iac|lab|projects|certs|contact', f: function (args) {
       var id = (args[0] || '').toLowerCase();
-      if (['about', 'stack', 'experience', 'lab', 'projects', 'certs', 'contact'].indexOf(id) < 0) return C('c-bad', 'usage: goto about|stack|experience|lab|projects|certs|contact');
+      if (['about', 'stack', 'experience', 'iac', 'lab', 'projects', 'certs', 'contact'].indexOf(id) < 0) return C('c-bad', 'usage: goto about|stack|experience|iac|lab|projects|certs|contact');
       setTimeout(function () { go(id); }, 150); return C('c-dim', 'cd #' + id);
     } },
     ping: { d: 'ping a lab host', f: function (args) {
@@ -941,6 +966,8 @@
     $$('#projects-list .proj').forEach(function (a) {
       out.push({ kind: 'proj', els: [a], name: $('.proj-title', a).textContent, text: a.textContent.toLowerCase() });
     });
+    var iac = $('#iac');
+    if (iac) out.push({ kind: 'lab', els: $$('.topo', iac), name: t('nav.iac'), text: iac.textContent.toLowerCase() });
     var lab = $('#lab');
     if (lab) out.push({ kind: 'lab', els: $$('.topo, .roadmap', lab), name: t('nav.lab'), text: lab.textContent.toLowerCase() });
     return out;
