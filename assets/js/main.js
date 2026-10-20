@@ -145,7 +145,7 @@
         '<text x="466" y="220" class="a-sub" text-anchor="middle">weekly restore test</text></g>' +
       archBox('', 'arch-n', 24, 268, 120, 40, 'Visitor', 'HTTPS') ;
     $('#arch-body').innerHTML =
-      '<div class="diagram-scroll"><svg class="topo-svg arch-svg" viewBox="0 0 560 326" role="img" aria-label="Architecture: a visitor reaches Caddy, Umami and PostgreSQL on an Oracle Cloud VM; Prometheus, Alertmanager and the node exporter alert to Discord; nightly backups go to Object Storage">' + svg + '</svg></div>' +
+      '<div class="diagram-scroll"><svg class="topo-svg arch-svg" viewBox="0 0 560 326" role="group" aria-label="Architecture: a visitor reaches Caddy, Umami and PostgreSQL on an Oracle Cloud VM; Prometheus, Alertmanager and the node exporter alert to Discord; nightly backups go to Object Storage">' + svg + '</svg></div>' +
       '<div class="break-bar"><button class="break-btn" id="drill-btn" type="button" aria-pressed="false"></button>' +
       '<p class="break-note" id="drill-note" aria-live="polite"></p></div>' +
       '<p class="topo-hint">' + esc(t('iac.arch.hint')) + '</p>';
