@@ -402,8 +402,8 @@ window.SITE = {
         why: { en: 'Container images, the application version and the CI tools are pinned. Nothing runs on latest, so a deploy of the same commit does the same thing next month.',
                el: 'Τα container images, η έκδοση της εφαρμογής και τα εργαλεία του CI είναι καρφωμένα. Τίποτα δεν τρέχει σε latest, οπότε ένα deploy του ίδιου commit κάνει το ίδιο και τον επόμενο μήνα.' } },
       { title: { en: 'Weekly restore test', el: 'Εβδομαδιαίο restore test' },
-        why: { en: 'Every Sunday the newest backup is downloaded, restored into a throwaway PostgreSQL container and sanity-checked, and the result is posted to Discord. A backup that has never been restored is not a backup.',
-               el: 'Κάθε Κυριακή το νεότερο backup κατεβαίνει, γίνεται restore σε προσωρινό container PostgreSQL, ελέγχεται, και το αποτέλεσμα στέλνεται στο Discord. Ένα backup που δεν έχει γίνει ποτέ restore δεν είναι backup.' } }
+        why: { en: 'Every Sunday the newest backup is restored into a throwaway database and checked, so I know it works before I need it.',
+               el: 'Κάθε Κυριακή το νεότερο backup γίνεται restore σε προσωρινή βάση και ελέγχεται, ώστε να ξέρω ότι δουλεύει πριν το χρειαστώ.' } }
     ]
   },
 

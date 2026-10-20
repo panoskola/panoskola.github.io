@@ -179,7 +179,7 @@
       }
       paintArch();
     } else if (e.target.closest('#arch-bucket')) {
-      archNote = archBackupNext;
+      if (!archDrill) archNote = archBackupNext;   // keep the alert explanation while the drill is on
       archPlay(archBackupNext === 'nightly' ? 'arch-backup' : 'arch-restore');
       archBackupNext = archBackupNext === 'nightly' ? 'restore' : 'nightly';
       paintArch();
