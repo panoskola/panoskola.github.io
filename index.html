@@ -61,7 +61,7 @@
   })();
 </script>
 <link rel="preload" href="assets/fonts/commissioner-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/style.css?v=17">
+<link rel="stylesheet" href="assets/css/style.css?v=18">
   <script defer src="https://panoskola-stats.duckdns.org/script.js" data-website-id="fbe08940-e6f8-485b-ab67-b7c868853870" data-domains="panoskola.github.io"></script>
 </head>
 <body>
@@ -106,7 +106,7 @@
 <section class="hero" id="hero">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="kicker reveal"><span class="pulse-dot"></span><span data-i18n="hero.kicker">Athens, Greece · 9+ years in IT</span></p>
+      <p class="kicker reveal"><span class="pulse-dot"></span><span data-i18n="hero.kicker">Athens, Greece</span></p>
       <h1 class="reveal glitch" data-text="Panayotis Kola">Panayotis Kola</h1>
       <p class="typed-line reveal"><span class="prompt">&gt;</span> <span id="typed"></span><span class="caret"></span></p>
       <p class="tagline reveal" data-i18n="hero.tagline">IT Administrator. I’ve looked after accounts, devices and security for staff in 22 countries.</p>
@@ -191,11 +191,14 @@
       </div>
     </div>
 
-    <h3 class="sub-head" data-i18n="iac.sec">Security &amp; reliability decisions</h3>
-    <div class="iac-sec" id="iac-sec"></div>
+    <details class="more">
+      <summary><span data-i18n="iac.more">Security decisions and incidents</span></summary>
+      <h3 class="sub-head" data-i18n="iac.sec">Security &amp; reliability decisions</h3>
+      <div class="iac-sec" id="iac-sec"></div>
 
-    <h3 class="sub-head" data-i18n="iac.broke">What broke, and what it taught me</h3>
-    <div class="incidents" id="iac-incidents"></div>
+      <h3 class="sub-head" data-i18n="iac.broke">What broke, and what it taught me</h3>
+      <div class="incidents" id="iac-incidents"></div>
+    </details>
 
     <p class="iac-repo"><a class="btn btn-ghost btn-sm" href="https://github.com/panoskola/site-analytics-iac" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.29-1.69-1.29-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
@@ -274,8 +277,10 @@
       </div>
     </div>
 
-    <h3 class="sub-head" data-i18n="lab.broke">What broke, and what it taught me</h3>
-    <div class="incidents" id="incidents"></div>
+    <details class="more">
+      <summary><span data-i18n="lab.broke">What broke, and what it taught me</span></summary>
+      <div class="incidents" id="incidents"></div>
+    </details>
   </div>
 </section>
 
@@ -376,7 +381,7 @@
 </div>
 
 <noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
-<script src="assets/js/content.js?v=19"></script>
-<script src="assets/js/main.js?v=19"></script>
+<script src="assets/js/content.js?v=20"></script>
+<script src="assets/js/main.js?v=20"></script>
 </body>
 </html>

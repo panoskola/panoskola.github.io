@@ -481,16 +481,13 @@
   var typedTimer = null;
   function restartTyped() {
     clearTimeout(typedTimer);
-    var el = $('#typed'), words = S.roles[lang()], wi = 0, ci = 0, del = false;
-    if (reduceMotion) { el.textContent = words[0]; return; }
+    var el = $('#typed'), w = S.roles[lang()][0], ci = 0;
+    if (reduceMotion) { el.textContent = w; startHeroTerm(); return; }
+    /* One animation at a time: the role types once, then the terminal below takes over */
     (function tick() {
-      var w = words[wi];
-      ci += del ? -1 : 1;
-      el.textContent = w.slice(0, ci);
-      var wait = del ? 35 : 75;
-      if (!del && ci === w.length) { del = true; wait = 1900; }
-      else if (del && ci === 0) { del = false; wi = (wi + 1) % words.length; wait = 350; }
-      typedTimer = setTimeout(tick, wait);
+      el.textContent = w.slice(0, ++ci);
+      if (ci < w.length) typedTimer = setTimeout(tick, 75);
+      else startHeroTerm();
     })();
   }
 
@@ -514,9 +511,11 @@
     ['cmd', 'Test-Connection 192.168.10.1 -Count 1 -Quiet'],
     ['out', '<span class="c-warn">False</span>  <span class="c-dim"># gateway intentionally absent</span>\n']
   ];
-  (function heroTerm() {
+  var heroTermStarted = false;
+  function startHeroTerm() {
     var pre = $('#hero-term');
-    if (!pre) return;
+    if (!pre || heroTermStarted) return;
+    heroTermStarted = true;
     var html = '', step = 0, ci = 0;
     var ps = '<span class="c-ps">PS C:\\&gt;</span> ';
     var full = heroScript.map(function (s) { return s[0] === 'cmd' ? ps + esc(s[1]) + '\n' : s[1]; }).join('');
@@ -542,8 +541,8 @@
       live.innerHTML = html;
       setTimeout(run, 900);
     }
-    setTimeout(run, 900);
-  })();
+    setTimeout(run, 400);
+  }
 
   /* ---------------- Network background ---------------- */
   var net = (function () {
@@ -1083,5 +1082,7 @@
     if (isNaN(d)) return;
     $('#updated').textContent = d.toLocaleDateString(lang() === 'el' ? 'el-GR' : 'en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
   })();
+  /* A closed <details> prints empty, so open the collapsed sections before printing */
+  window.addEventListener('beforeprint', function () { $$('details.more').forEach(function (d) { d.open = true; }); });
   renderAll();
 })();

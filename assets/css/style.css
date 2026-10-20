@@ -319,6 +319,15 @@ html[lang="el"] h1, html[lang="el"] h2 { letter-spacing: -0.012em; }
 .section.quiet h2 { font-size: clamp(1.5rem, 2.8vw, 2rem); }
 .section.quiet .card-pad { padding: 20px; box-shadow: none; }
 .sub-head { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; margin: 56px 0 22px; }
+.more { margin-top: 48px; }
+.more > summary { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; padding: 14px 18px; border: 1px solid var(--border); border-radius: 12px; }
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary::before { content: "+"; font-family: var(--mono); color: var(--accent); width: 1ch; }
+.more[open] > summary::before { content: "−"; }
+.more > summary:hover { border-color: var(--accent); }
+.more > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.more[open] > summary { margin-bottom: 22px; }
+.more > .sub-head:first-of-type { margin-top: 0; }
 
 /* ---------- About ---------- */
 .about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: start; }
