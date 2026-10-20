@@ -3,7 +3,7 @@ window.SITE = {
   ui: {
     en: {
       'nav.about': 'About', 'nav.stack': 'Stack', 'nav.experience': 'Experience',
-      'nav.lab': 'Home Lab', 'nav.projects': 'Projects', 'nav.certs': 'Credentials', 'nav.contact': 'Contact',
+      'nav.lab': 'Home Lab', 'nav.infra': 'Infrastructure', 'infra.t.iac': 'IaC · Analytics', 'infra.t.lab': 'Home Lab · AD', 'nav.projects': 'Projects', 'nav.certs': 'Credentials', 'nav.contact': 'Contact',
       'hero.kicker': 'Athens, Greece',
       'hero.tagline': 'IT Administrator. I’ve looked after accounts, devices and security for staff in 22 countries.',
       'hero.cv': 'Download CV', 'hero.terminal': 'Open terminal', 'hero.contact': 'Get in touch',
@@ -57,7 +57,7 @@ window.SITE = {
     },
     el: {
       'nav.about': 'Προφίλ', 'nav.stack': 'Τεχνολογίες', 'nav.experience': 'Εμπειρία',
-      'nav.lab': 'Home Lab', 'nav.projects': 'Projects', 'nav.certs': 'Πιστοποιήσεις', 'nav.contact': 'Επικοινωνία',
+      'nav.lab': 'Home Lab', 'nav.infra': 'Υποδομή', 'infra.t.iac': 'IaC · Analytics', 'infra.t.lab': 'Home Lab · AD', 'nav.projects': 'Projects', 'nav.certs': 'Πιστοποιήσεις', 'nav.contact': 'Επικοινωνία',
       'hero.kicker': 'Αθήνα, Ελλάδα',
       'hero.tagline': 'IT Administrator. Έχω φροντίσει λογαριασμούς, συσκευές και ασφάλεια για προσωπικό σε 22 χώρες.',
       'hero.cv': 'Λήψη CV', 'hero.terminal': 'Άνοιγμα terminal', 'hero.contact': 'Επικοινωνία',

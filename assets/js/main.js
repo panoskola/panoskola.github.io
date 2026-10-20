@@ -384,14 +384,46 @@
     menuBtn.setAttribute('aria-expanded', open);
   });
   $$('#nav-links a').forEach(function (a) {
-    a.addEventListener('click', function () { links.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); });
+    a.addEventListener('click', function () {
+      if (a.getAttribute('href') === '#iac') showInfra('iac');
+      links.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false');
+    });
   });
+  /* IaC and Home Lab share one slot: tabs switch which one is shown */
+  var infraTab = 'iac';
+  function showInfra(id) {
+    if (id !== 'iac' && id !== 'lab') return;
+    infraTab = id;
+    $('#iac').hidden = id !== 'iac';
+    $('#lab').hidden = id !== 'lab';
+    $$('.infra-tabs [data-tab]').forEach(function (b) {
+      var on = b.getAttribute('data-tab') === id;
+      b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1;
+    });
+  }
+  $$('.infra-tabs').forEach(function (tabs) {
+    tabs.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-tab]');
+      if (b) { showInfra(b.getAttribute('data-tab')); var f = $('[data-tab="' + b.getAttribute('data-tab') + '"]', document.getElementById(infraTab)); if (f) f.focus(); }
+    });
+    tabs.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      showInfra(infraTab === 'iac' ? 'lab' : 'iac');
+      var f = $('[data-tab="' + infraTab + '"]', document.getElementById(infraTab)); if (f) f.focus();
+    });
+  });
+  if (location.hash === '#lab') showInfra('lab');
   var bar = $('.scroll-progress span');
+  var cvFab = $('#cv-fab'), heroEl = $('#hero'), contactEl = $('#contact');
   function onScroll() {
     var y = window.scrollY || window.pageYOffset;
     nav.classList.toggle('scrolled', y > 10);
     var max = document.documentElement.scrollHeight - window.innerHeight;
     bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0) + ')';
+    /* Floating CV button: after the hero, until the contact card (which has its own) is on screen */
+    var show = y > heroEl.offsetHeight && contactEl.getBoundingClientRect().top > window.innerHeight;
+    cvFab.classList.toggle('show', show); cvFab.tabIndex = show ? 0 : -1; cvFab.setAttribute('aria-hidden', !show);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('load', function () { requestAnimationFrame(onScroll); });
@@ -417,7 +449,7 @@
       entries.forEach(function (en) {
         if (en.isIntersecting) {
           $$('#nav-links a').forEach(function (a) {
-            var on = a.getAttribute('href') === '#' + en.target.id;
+            var on = a.getAttribute('href') === '#' + (en.target.id === 'lab' ? 'iac' : en.target.id);
             a.classList.toggle('active', on);
             if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
           });
@@ -693,7 +725,7 @@
   function sectionList(title, rows) {
     return C('c-acc', title) + '\n' + rows.map(function (r) { return '  ' + r; }).join('\n');
   }
-  function go(id) { closeTerm(); var el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); }
+  function go(id) { closeTerm(); showInfra(id); var el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); }
 
   var CMDS = {
     help: { d: 'list commands', f: function () {
@@ -1083,6 +1115,10 @@
     $('#updated').textContent = d.toLocaleDateString(lang() === 'el' ? 'el-GR' : 'en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
   })();
   /* A closed <details> prints empty, so open the collapsed sections before printing */
-  window.addEventListener('beforeprint', function () { $$('details.more').forEach(function (d) { d.open = true; }); });
+  window.addEventListener('beforeprint', function () {
+    $$('details.more').forEach(function (d) { d.open = true; });
+    $('#iac').hidden = false; $('#lab').hidden = false;
+  });
+  window.addEventListener('afterprint', function () { showInfra(infraTab); });
   renderAll();
 })();
