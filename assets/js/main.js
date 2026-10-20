@@ -519,24 +519,27 @@
     if (!pre) return;
     var html = '', step = 0, ci = 0;
     var ps = '<span class="c-ps">PS C:\\&gt;</span> ';
-    if (reduceMotion) {
-      pre.innerHTML = heroScript.map(function (s) { return s[0] === 'cmd' ? ps + esc(s[1]) + '\n' : s[1]; }).join('');
-      return;
-    }
+    var full = heroScript.map(function (s) { return s[0] === 'cmd' ? ps + esc(s[1]) + '\n' : s[1]; }).join('');
+    if (reduceMotion) { pre.innerHTML = full; return; }
+    /* An invisible copy of the finished text reserves the final height, so the page does not reflow as the lines type in */
+    var ghost = document.createElement('div'), live = document.createElement('div');
+    ghost.className = 'ht-ghost'; ghost.setAttribute('aria-hidden', 'true'); ghost.innerHTML = full;
+    live.className = 'ht-live';
+    pre.appendChild(ghost); pre.appendChild(live);
     function run() {
       if (step >= heroScript.length) { setTimeout(function () { html = ''; step = 0; run(); }, 5000); return; }
       var s = heroScript[step];
       if (s[0] === 'cmd') {
         if (ci === 0) html += ps;
         ci++;
-        pre.innerHTML = html + esc(s[1].slice(0, ci)) + '<span class="caret"></span>';
+        live.innerHTML = html + esc(s[1].slice(0, ci)) + '<span class="caret"></span>';
         if (ci < s[1].length) return setTimeout(run, 28 + Math.random() * 40);
         html += esc(s[1]) + '\n'; ci = 0; step++;
-        pre.innerHTML = html;
+        live.innerHTML = html;
         return setTimeout(run, 420);
       }
       html += s[1]; step++;
-      pre.innerHTML = html;
+      live.innerHTML = html;
       setTimeout(run, 900);
     }
     setTimeout(run, 900);
