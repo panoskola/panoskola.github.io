@@ -5,14 +5,14 @@ window.SITE = {
       'nav.about': 'About', 'nav.stack': 'Stack', 'nav.experience': 'Experience',
       'nav.lab': 'Home Lab', 'nav.infra': 'Infrastructure', 'infra.t.iac': 'IaC · Analytics', 'infra.t.lab': 'Home Lab · AD', 'nav.projects': 'Projects', 'nav.certs': 'Credentials', 'nav.contact': 'Contact',
       'hero.kicker': 'Athens, Greece',
-      'hero.tagline': 'IT Administrator. I’ve looked after accounts, devices and security for staff in 22 countries.',
+      'hero.tagline': 'IT Support & Administration. I’ve looked after accounts, devices and security for staff in 22 countries.',
       'hero.cv': 'Download CV', 'hero.terminal': 'Open terminal', 'hero.contact': 'Get in touch',
       'hero.hint': 'Tip: press <kbd>`</kbd> anywhere to open the terminal',
       'stat.years': 'Years in IT', 'stat.countries': 'Countries supported',
       'stat.tz': 'Time zones', 'stat.apple': 'Years Apple-certified repair',
       'about.label': 'About', 'about.title': 'Profile',
-      'about.p1': 'I’m an IT Administrator in Athens with 9+ years in support and administration. At Blueground I started on the service desk and became IT Administrator. Users in 22 countries and six time zones reached IT through Jira Service Management, and I handled their accounts, access and devices in Google Workspace, JumpCloud, SentinelOne and Trend Micro Apex One.',
-      'about.p2': 'At Dialectica I administered Microsoft 365, Google Workspace and NinjaRMM. Outside work I run a Windows Server 2022 and Active Directory lab on Hyper-V, and a self-hosted analytics server on Oracle Cloud (Linux, Docker). I write up every build and every fix as a runbook, and I’m studying for CompTIA Network+.',
+      'about.p1': 'I work in IT support and administration in Athens, with over nine years in the field. At Blueground I started on the service desk and became IT Administrator. Users in 22 countries and six time zones reached IT through Jira Service Management, and I handled their accounts, access and devices in Google Workspace, JumpCloud, SentinelOne and Trend Micro Apex One.',
+      'about.p2': 'At Dialectica I administered Microsoft 365, Google Workspace and NinjaRMM. In 2025 I spent a year outside IT as an automation engineer on hotel installations, and I’m now back in IT. Outside work I run a Windows Server 2022 and Active Directory lab on Hyper-V, and a self-hosted analytics server on Oracle Cloud (Linux, Docker). I write up every build and every fix as a runbook, and I’m studying for CompTIA Network+.',
       'about.f1t': 'Support', 'about.f1': 'Tickets triaged against SLAs, every fix written down.',
       'about.f2t': 'Access', 'about.f2': 'Onboarding, offboarding, MFA and role-based access across Google Workspace, Slack and Jira.',
       'about.f3t': 'Lab', 'about.f3': 'I break things on purpose and write down what happened.',
@@ -27,7 +27,7 @@ window.SITE = {
       'lab.try': 'Click a machine to run a command on it in the terminal.', 'a11y.skip': 'Skip to content', 'footer.email': 'Email', 'footer.updated': 'Last updated',
       'lab.done': 'Done', 'lab.next': 'Next',
       'nav.iac': 'IaC', 'iac.title': 'Infrastructure as Code: self-hosted analytics',
-      'iac.intro': 'Infrastructure as code for the analytics service that counts visits to this site. One terraform apply and one ansible-playbook turn an empty Oracle Cloud account into a hardened, monitored, backed-up HTTPS service. Every change after that goes through a CI/CD pipeline with a manual approval gate.',
+      'iac.intro': 'A learning project, built with AI assistance to learn Terraform, Ansible and CI/CD. I ran every step myself and worked through the errors. Infrastructure as code for the analytics service that counts visits to this site. One terraform apply and one ansible-playbook turn an empty Oracle Cloud account into a hardened, monitored, backed-up HTTPS service. Every change after that goes through a CI/CD pipeline with a manual approval gate.',
       'iac.repo': 'View code on GitHub', 'iac.pipe': 'Pipeline', 'iac.arch': 'Architecture', 'iac.sec': 'Security & reliability decisions',
       'iac.broke': 'What broke, and what it taught me', 'iac.more': 'Security decisions and incidents', 'iac.why': 'Why',
       'iac.run': 'Run pipeline', 'iac.approve': 'Approve', 'iac.replay': 'Run again',
@@ -49,7 +49,7 @@ window.SITE = {
       'certs.edu': 'Education', 'certs.courses': 'Certifications & Training', 'certs.lang': 'Languages',
       'certs.prep': 'In preparation', 'certs.done': 'Completed',
       'contact.label': 'Contact', 'contact.title': 'Let’s talk',
-      'contact.text': 'Open to IT Administrator and systems roles in Athens, hybrid or remote. The fastest way to reach me is email.',
+      'contact.text': 'Open to IT Support or IT Administrator roles in Athens, on site, hybrid or remote. The fastest way to reach me is email.',
       'contact.email': 'Email me', 'contact.copy': 'Copy email', 'contact.copied': 'Copied',
       'footer': 'Built with HTML, CSS & vanilla JavaScript, with help from Claude · Hosted on GitHub Pages',
       'theme.toggle': 'Toggle light / dark theme', 'lang.toggle': 'EN/ΕΛ — switch language',
@@ -59,14 +59,14 @@ window.SITE = {
       'nav.about': 'Προφίλ', 'nav.stack': 'Τεχνολογίες', 'nav.experience': 'Εμπειρία',
       'nav.lab': 'Home Lab', 'nav.infra': 'Υποδομή', 'infra.t.iac': 'IaC · Analytics', 'infra.t.lab': 'Home Lab · AD', 'nav.projects': 'Projects', 'nav.certs': 'Πιστοποιήσεις', 'nav.contact': 'Επικοινωνία',
       'hero.kicker': 'Αθήνα, Ελλάδα',
-      'hero.tagline': 'IT Administrator. Έχω φροντίσει λογαριασμούς, συσκευές και ασφάλεια για προσωπικό σε 22 χώρες.',
+      'hero.tagline': 'IT Support & Administration. Έχω φροντίσει λογαριασμούς, συσκευές και ασφάλεια για προσωπικό σε 22 χώρες.',
       'hero.cv': 'Λήψη CV', 'hero.terminal': 'Άνοιγμα terminal', 'hero.contact': 'Επικοινωνία',
       'hero.hint': 'Tip: πάτα <kbd>`</kbd> οπουδήποτε για να ανοίξει το terminal',
       'stat.years': 'Χρόνια στο IT', 'stat.countries': 'Χώρες υποστήριξης',
       'stat.tz': 'Ζώνες ώρας', 'stat.apple': 'Χρόνια πιστοποιημένων επισκευών Apple',
       'about.label': 'Σχετικά', 'about.title': 'Προφίλ',
-      'about.p1': 'Είμαι IT Administrator στην Αθήνα με 9+ χρόνια σε υποστήριξη και διαχείριση IT. Στη Blueground ξεκίνησα από το service desk και έγινα IT Administrator. Χρήστες σε 22 χώρες και έξι ζώνες ώρας απευθύνονταν στο IT μέσω Jira Service Management, και εγώ χειριζόμουν τους λογαριασμούς, την πρόσβαση και τις συσκευές τους σε Google Workspace, JumpCloud, SentinelOne και Trend Micro Apex One.',
-      'about.p2': 'Στη Dialectica διαχειρίστηκα Microsoft 365, Google Workspace και NinjaRMM. Εκτός δουλειάς τρέχω ένα lab με Windows Server 2022 και Active Directory σε Hyper-V και έναν self-hosted server για analytics στο Oracle Cloud (Linux, Docker). Γράφω κάθε στήσιμο και κάθε διόρθωση ως runbook και προετοιμάζομαι για το CompTIA Network+.',
+      'about.p1': 'Δουλεύω σε υποστήριξη και διαχείριση IT στην Αθήνα, με πάνω από εννέα χρόνια στον χώρο. Στη Blueground ξεκίνησα από το service desk και έγινα IT Administrator. Χρήστες σε 22 χώρες και έξι ζώνες ώρας απευθύνονταν στο IT μέσω Jira Service Management, και εγώ χειριζόμουν τους λογαριασμούς, την πρόσβαση και τις συσκευές τους σε Google Workspace, JumpCloud, SentinelOne και Trend Micro Apex One.',
+      'about.p2': 'Στη Dialectica διαχειρίστηκα Microsoft 365, Google Workspace και NinjaRMM. Το 2025 πέρασα έναν χρόνο εκτός IT ως automation engineer σε εγκαταστάσεις ξενοδοχείων και τώρα επέστρεψα στο IT. Εκτός δουλειάς τρέχω ένα lab με Windows Server 2022 και Active Directory σε Hyper-V και έναν self-hosted server για analytics στο Oracle Cloud (Linux, Docker). Γράφω κάθε στήσιμο και κάθε διόρθωση ως runbook και προετοιμάζομαι για το CompTIA Network+.',
       'about.f1t': 'Υποστήριξη', 'about.f1': 'Tickets με προτεραιότητα βάσει SLA, κάθε λύση καταγεγραμμένη.',
       'about.f2t': 'Πρόσβαση', 'about.f2': 'Onboarding, offboarding, MFA και πρόσβαση βάσει ρόλων σε Google Workspace, Slack και Jira.',
       'about.f3t': 'Lab', 'about.f3': 'Χαλάω πράγματα σκόπιμα και γράφω τι έγινε.',
@@ -81,7 +81,7 @@ window.SITE = {
       'lab.try': 'Πάτησε ένα μηχάνημα για να τρέξει μια εντολή στο terminal.', 'a11y.skip': 'Μετάβαση στο περιεχόμενο', 'footer.email': 'Email', 'footer.updated': 'Τελευταία ενημέρωση',
       'lab.done': 'Έγινε', 'lab.next': 'Επόμενο',
       'nav.iac': 'IaC', 'iac.title': 'Υποδομή ως κώδικας: self-hosted analytics',
-      'iac.intro': 'Υποδομή ως κώδικας για την υπηρεσία analytics που μετράει τις επισκέψεις σε αυτό το site. Ένα terraform apply και ένα ansible-playbook μετατρέπουν έναν άδειο λογαριασμό Oracle Cloud σε ασφαλισμένη, παρακολουθούμενη υπηρεσία HTTPS με backups. Κάθε αλλαγή μετά περνάει από pipeline CI/CD με χειροκίνητο gate έγκρισης.',
+      'iac.intro': 'Project εκμάθησης, φτιαγμένο με τη βοήθεια AI για να μάθω Terraform, Ansible και CI/CD. Έτρεξα κάθε βήμα μόνος μου και έλυσα τα λάθη στην πορεία. Υποδομή ως κώδικας για την υπηρεσία analytics που μετράει τις επισκέψεις σε αυτό το site. Ένα terraform apply και ένα ansible-playbook μετατρέπουν έναν άδειο λογαριασμό Oracle Cloud σε ασφαλισμένη, παρακολουθούμενη υπηρεσία HTTPS με backups. Κάθε αλλαγή μετά περνάει από pipeline CI/CD με χειροκίνητο gate έγκρισης.',
       'iac.repo': 'Ο κώδικας στο GitHub', 'iac.pipe': 'Pipeline', 'iac.arch': 'Αρχιτεκτονική', 'iac.sec': 'Αποφάσεις ασφάλειας & αξιοπιστίας',
       'iac.broke': 'Τι χάλασε και τι μου έμαθε', 'iac.more': 'Αποφάσεις ασφάλειας και περιστατικά', 'iac.why': 'Γιατί',
       'iac.run': 'Τρέξε το pipeline', 'iac.approve': 'Έγκριση', 'iac.replay': 'Ξανά',
@@ -103,7 +103,7 @@ window.SITE = {
       'certs.edu': 'Σπουδές', 'certs.courses': 'Πιστοποιήσεις & Εκπαίδευση', 'certs.lang': 'Γλώσσες',
       'certs.prep': 'Σε προετοιμασία', 'certs.done': 'Ολοκληρώθηκε',
       'contact.label': 'Επικοινωνία', 'contact.title': 'Ας μιλήσουμε',
-      'contact.text': 'Ανοιχτός σε θέσεις IT Administrator και systems στην Αθήνα, υβριδικά ή remote. Ο πιο γρήγορος τρόπος να με βρείτε είναι το email.',
+      'contact.text': 'Ανοιχτός σε θέσεις IT Support ή IT Administrator στην Αθήνα, on site, υβριδικά ή remote. Ο πιο γρήγορος τρόπος να με βρείτε είναι το email.',
       'contact.email': 'Στείλτε email', 'contact.copy': 'Αντιγραφή email', 'contact.copied': 'Αντιγράφηκε',
       'footer': 'Φτιαγμένο με HTML, CSS & vanilla JavaScript, με τη βοήθεια του Claude · Φιλοξενείται στο GitHub Pages',
       'theme.toggle': 'Αλλαγή φωτεινού / σκοτεινού θέματος', 'lang.toggle': 'EN/ΕΛ — αλλαγή γλώσσας',
@@ -112,8 +112,8 @@ window.SITE = {
   },
 
   roles: {
-    en: ['IT Administrator', 'Identity & Access', 'Endpoint Management', 'Windows Server · AD (lab)'],
-    el: ['IT Administrator', 'Ταυτότητες & Πρόσβαση', 'Διαχείριση Endpoints', 'Windows Server · AD (lab)']
+    en: ['IT Support & Administration', 'Identity & Access', 'Endpoint Management', 'Windows Server · AD (lab)'],
+    el: ['IT Support & Administration','Ταυτότητες & Πρόσβαση', 'Διαχείριση Endpoints', 'Windows Server · AD (lab)']
   },
 
   stack: [
@@ -440,7 +440,7 @@ window.SITE = {
   ],
 
   languages: {
-    en: ['Greek — Native', 'English — B2 (professional working)'],
-    el: ['Ελληνικά — Μητρική', 'Αγγλικά — B2 (επαγγελματικό επίπεδο)']
+    en: ['Greek — Native', 'English — B2 (good in writing, improving in conversation)'],
+    el: ['Ελληνικά — Μητρική', 'Αγγλικά — B2 (καλά στο γραπτό, βελτιώνομαι στην προφορική)']
   }
 };

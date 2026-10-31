@@ -23,7 +23,7 @@
     $$('[data-i18n]').forEach(function (el) { el.textContent = t(el.getAttribute('data-i18n')); });
     $$('[data-i18n-html]').forEach(function (el) { el.innerHTML = t(el.getAttribute('data-i18n-html')); });
     $$('[data-i18n-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
-    document.title = lang() === 'el' ? 'Παναγιώτης Κόλα — IT Administrator' : 'Panayotis Kola — IT Administrator';
+    document.title = lang() === 'el' ? 'Παναγιώτης Κόλα — IT Support & Administration' : 'Panayotis Kola — IT Support & Administration';
   }
 
   /* ---------------- Renderers ---------------- */
@@ -737,7 +737,7 @@
       return sectionList('Available commands', rows);
     } },
     whoami: { d: 'who is this', f: function () {
-      return C('c-acc', 'Panayotis Kola') + ' — IT Administrator\n' + C('c-dim', 'Athens, Greece · 9+ years in IT support & administration');
+      return C('c-acc', 'Panayotis Kola') + ' — IT Support & Administration\n' + C('c-dim', 'Athens, Greece · 9+ years in IT support & administration');
     } },
     about: { d: 'short profile', f: function () { return t('about.p1') + '\n\n' + t('about.p2'); } },
     skills: { d: 'technical stack', f: function () {
@@ -867,7 +867,7 @@
       var info = [
         C('c-acc', 'pkola') + '@' + C('c-acc', 'lab'),
         C('c-dim', '-----------'),
-        C('c-acc', 'Role       ') + 'IT Administrator',
+        C('c-acc', 'Role       ') + 'IT Support & Administration',
         C('c-acc', 'Location   ') + 'Athens, Greece',
         C('c-acc', 'Uptime     ') + '9+ years in IT',
         C('c-acc', 'Lab        ') + 'Windows Server 2022 · AD DS · Hyper-V',
