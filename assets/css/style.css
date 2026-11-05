@@ -328,9 +328,7 @@ html[lang="el"] h1, html[lang="el"] h2 { letter-spacing: -0.012em; }
 .infra-tabs button[aria-selected="true"] { color: var(--text); background: var(--surface-hi); box-shadow: inset 0 0 0 1px var(--accent); }
 .infra-tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .sec-cta { margin-top: 40px; }
-.cv-fab { position: fixed; right: 20px; bottom: 20px; z-index: 55; box-shadow: var(--shadow); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .25s, transform .25s; }
-.cv-fab.show { opacity: 1; transform: none; pointer-events: auto; }
-@media print { .infra-tabs, .cv-fab, .sec-cta { display: none; } }
+@media print { .infra-tabs, .sec-cta { display: none; } }
 .more { margin-top: 48px; }
 .more > summary { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; padding: 14px 18px; border: 1px solid var(--border); border-radius: 12px; }
 .more > summary::-webkit-details-marker { display: none; }

@@ -415,15 +415,11 @@
   });
   if (location.hash === '#lab') showInfra('lab');
   var bar = $('.scroll-progress span');
-  var cvFab = $('#cv-fab'), heroEl = $('#hero'), contactEl = $('#contact');
   function onScroll() {
     var y = window.scrollY || window.pageYOffset;
     nav.classList.toggle('scrolled', y > 10);
     var max = document.documentElement.scrollHeight - window.innerHeight;
     bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0) + ')';
-    /* Floating CV button: after the hero, until the contact card (which has its own) is on screen */
-    var show = y > heroEl.offsetHeight && contactEl.getBoundingClientRect().top > window.innerHeight;
-    cvFab.classList.toggle('show', show); cvFab.tabIndex = show ? 0 : -1; cvFab.setAttribute('aria-hidden', !show);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('load', function () { requestAnimationFrame(onScroll); });
